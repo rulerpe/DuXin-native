@@ -1,67 +1,76 @@
-import { useState, useEffect } from "react";
-import { Text, View, Pressable, StyleSheet } from "react-native";
-import { router } from "expo-router";
-import theme from "../theme";
-import ButtonComponent from "../components/ButtonComponent";
-import LanguageSelector from "../components/LanguageSelector";
-import { useTakePhoto } from "../hooks/useTakePhoto";
+import { useState, useEffect } from 'react';
+import { StyleSheet, ScrollView } from 'react-native';
+import { router } from 'expo-router';
+import theme from '../theme';
+import ButtonComponent from '../components/ButtonComponent';
+import TextComponent from '../components/TextComponent';
+import LanguageSelector from '../components/LanguageSelector';
+import { useTakePhoto } from '../hooks/useTakePhoto';
+import { useTranslation } from 'react-i18next';
+import ApiService from '../services/ApiService';
+import { useUser } from '../contexts/UserContext';
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { image, takePhoto } = useTakePhoto();
+  const { t, i18n } = useTranslation();
+  const { setUser } = useUser();
 
   useEffect(() => {
     const uploadImage = async () => {
-      console.log("uploading image", image);
-      setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
-        router.navigate("/summary-generate");
-      }, 1000);
-      // const formData = new FormData();
-      // formData.append('photo',{
-
-      // })
+      if (image) {
+        try {
+          setIsLoading(true);
+          const formData = new FormData();
+          //@ts-ignore
+          formData.append('image', { uri: image, type: 'image/jpeg', name: 'photo.jpg' });
+          await ApiService.uploadImage(formData);
+          router.navigate('/summary-generate');
+        } catch (error) {
+          console.error(error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
     };
-    if (image) {
-      uploadImage();
-    }
+    uploadImage();
   }, [image]);
 
   const handleLanguageChange = async (language: string) => {
-    console.log("language changed", language);
-    setIsLoading(true);
-    setTimeout(() => {
+    try {
+      setIsLoading(true);
+      const response = await ApiService.updateUserLanguage(language);
+      i18n.changeLanguage(language);
+      setUser(response.user);
+    } catch (error) {
+      console.error('Change language failed');
+    } finally {
       setIsLoading(false);
-      console.log("make request to update user language");
-    }, 1000);
+    }
   };
   return (
-    <View style={styles.homePage}>
-      <Text style={styles.welcomeText}>
-        Take a picture of a letter see summary and translation
-      </Text>
-      <ButtonComponent
-        label="Take a photo"
-        onPress={takePhoto}
-        isLoading={isLoading}
-      />
-      <LanguageSelector
-        onLanguageChange={handleLanguageChange}
-        isDisabled={isLoading}
-      />
-    </View>
+    <ScrollView style={styles.homePage} contentContainerStyle={styles.contentContainer}>
+      <TextComponent style={styles.welcomeText}>{t('welcomText')}</TextComponent>
+      <ButtonComponent label={t('navigateToCamera')} onPress={takePhoto} isLoading={isLoading} />
+      <LanguageSelector onLanguageChange={handleLanguageChange} isDisabled={isLoading} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   homePage: {
     paddingHorizontal: 15,
+    width: '100%',
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   welcomeText: {
     fontSize: theme.font.large,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginVertical: 20,
-    textAlign: "center",
+    textAlign: 'center',
   },
 });

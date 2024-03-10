@@ -4,31 +4,36 @@
     "slug": "Duxin",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/DuXinIconCircle.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/DuxinLogoSplashCircle.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/DuXinIconCircle.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.neetisthebest.Duxin"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/DuxinLogoFaviconCircle.png"
     },
-    "plugins": [
-      "expo-router"
-    ],
-    "scheme": "duxin"
+    "plugins": ["expo-router", "expo-localization", "expo-secure-store"],
+    "scheme": "duxin",
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3a4029a8-7292-4a8a-9ad8-460a99504436"
+      }
+    }
   }
 }

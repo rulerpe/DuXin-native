@@ -1,86 +1,131 @@
-import { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import * as Progress from "react-native-progress";
-import SummaryDetail, { SummaryDetailType } from "../components/SummaryDetail";
-import ButtonComponent from "../components/ButtonComponent";
-import { useTakePhoto } from "../hooks/useTakePhoto";
-import theme from "../theme";
-const summaryMock: SummaryDetailType = {
-  title: "NVEnergy Bill Summary",
-  body: "该信函提供了收件人的电力使用历史、当前账单金额和付款选项的摘要。",
-  action:
-    "收件人需要查看账单详细信息，在2015年7月7日前支付104.70美元，并考虑在nvenergy.com上注册无纸化账单。",
-};
+import { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import ProgressBar from '../components/ProgressBar';
+import SummaryDetail, { SummaryDetailProps } from '../components/SummaryDetail';
+import ButtonComponent from '../components/ButtonComponent';
+import TextComponent from '../components/TextComponent';
+import { useTakePhoto } from '../hooks/useTakePhoto';
+import theme from '../theme';
+import useActionCable from '../hooks/useActionCable';
+import { STAGES } from '../types';
+import ApiService from '../services/ApiService';
+import { router } from 'expo-router';
+
 export default function SummaryGeneratePage() {
   const { image, takePhoto } = useTakePhoto();
   const [isUploading, setIsUploading] = useState(false);
-  const [stage, setStage] = useState(0);
-  const [summary, setSummary] = useState<SummaryDetailType | null>(null);
+  const { currentStage, translatedSummary, resetStage } = useActionCable(
+    'SummaryTranslationChannel',
+  );
+  const [uploadError, setUploadError] = useState(false);
+  const { t } = useTranslation();
 
-  const mockProgress = async () => {
-    let interval = await setInterval(changeStage, 1000);
-    function changeStage() {
-      if (stage > 1) {
-        clearInterval(interval);
+  useEffect(() => {
+    const uploadImage = async () => {
+      if (image) {
+        resetStage();
+        try {
+          setIsUploading(true);
+          const formData = new FormData();
+          //@ts-ignore
+          formData.append('image', { uri: image, type: 'image/jpeg', name: 'photo.jpg' });
+          await ApiService.uploadImage(formData);
+        } catch (error) {
+          setUploadError(true);
+        } finally {
+          setIsUploading(false);
+        }
       }
-      setStage((pre) => pre + 0.3);
-    }
-    setSummary(summaryMock);
-  };
-  useEffect(() => {
-    mockProgress();
-  }, []);
-
-  useEffect(() => {
-    if (image) {
-      setStage(0);
-      setSummary(null);
-      mockProgress();
-    }
+    };
+    uploadImage();
   }, [image]);
 
-  return (
-    <View style={styles.summaryGeneratePageWrapper}>
-      {stage > 1.3 && summary ? (
-        <View>
-          <SummaryDetail summary={summary} />
-          <View style={styles.photoButtonWrapper}>
-            <ButtonComponent
-              label="Take a photo"
-              onPress={takePhoto}
-              isLoading={isUploading}
-            />
-          </View>
+  const onTryAgain = () => {
+    router.navigate('/');
+  };
+
+  const errorView = () => {
+    return (
+      <View>
+        <TextComponent style={styles.errorMessage}>{t('summaryGeneratePageError')}</TextComponent>
+        <View style={styles.photoButtonWrapper}>
+          <ButtonComponent label={t('tryAgian')} onPress={onTryAgain} isLoading={isUploading} />
         </View>
-      ) : (
-        <View style={styles.progressBarWrapper}>
-          <Progress.Bar
-            progress={stage}
-            width={null}
-            height={30}
-            color={theme.colors.primary}
+      </View>
+    );
+  };
+  const progressBarView = () => {
+    return (
+      <View style={styles.progressBarWrapper}>
+        <ProgressBar stages={Object.keys(STAGES)} currentStage={STAGES[currentStage]} />
+        <TextComponent style={styles.progressText}>{t(`${currentStage}`)}</TextComponent>
+      </View>
+    );
+  };
+
+  const summaryDetailView = ({ summary }: SummaryDetailProps) => {
+    return (
+      <View>
+        <SummaryDetail summary={summary} />
+        <View style={styles.photoButtonWrapper}>
+          <ButtonComponent
+            label={t('navigateToCamera')}
+            onPress={takePhoto}
+            isLoading={isUploading}
           />
-          <Text style={styles.progressText}>Current stage: {stage}</Text>
         </View>
-      )}
-    </View>
+      </View>
+    );
+  };
+
+  const views = () => {
+    if (currentStage === 'error' || uploadError) {
+      return errorView();
+    } else if (currentStage === 'summary_translation_completed' && translatedSummary) {
+      return summaryDetailView({
+        summary: {
+          title: translatedSummary.title,
+          body: translatedSummary.body,
+          action: translatedSummary.action,
+        },
+      });
+    } else {
+      return progressBarView();
+    }
+  };
+
+  return (
+    <ScrollView
+      style={styles.summaryGeneratePageWrapper}
+      contentContainerStyle={styles.contentContainer}>
+      {views()}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   summaryGeneratePageWrapper: {
     paddingHorizontal: 15,
-    width: "100%",
+    width: '100%',
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   progressBarWrapper: {
-    // flex: 1,
+    width: '100%',
   },
   progressText: {
     marginTop: 10,
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: theme.font.large,
   },
   photoButtonWrapper: {
     marginTop: 30,
+  },
+  errorMessage: {
+    fontSize: theme.font.large,
   },
 });

@@ -1,0 +1,31 @@
+{
+  "cli": {
+    "version": ">= 7.4.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.duxinapp.com",
+        "EXPO_PUBLIC_WEBSOCKET_URL": "wss://api.duxinapp.com/cable"
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://api.duxinapp.com",
+        "EXPO_PUBLIC_WEBSOCKET_URL": "wss://api.duxinapp.com/cable"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

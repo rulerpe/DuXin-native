@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet, Text } from "react-native";
-import { FontAwesome5 } from "@expo/vector-icons";
+import { Pressable, StyleSheet } from 'react-native';
+import { FontAwesome5 } from '@expo/vector-icons';
 
 interface IconButtonProps {
   icon: any;
@@ -16,8 +16,8 @@ export default function IconButton({ icon, onPress }: IconButtonProps) {
 
 const styles = StyleSheet.create({
   iconButton: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 20,
   },
 });
