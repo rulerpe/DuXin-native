@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "627666439362",
+    "project_id": "duxin-app",
+    "storage_bucket": "duxin-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627666439362:android:9246306d6448ab09fa7f5b",
+        "android_client_info": {
+          "package_name": "com.neetisthebest.Duxin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ34EPFGOvL6ffmzMlklqgaGuKkrr5Fok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

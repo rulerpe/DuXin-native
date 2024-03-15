@@ -13,6 +13,8 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "com.neetisthebest.Duxin",
       "supportsTablet": true
     },
     "android": {
@@ -20,12 +22,26 @@
         "foregroundImage": "./assets/DuXinIconCircle.png",
         "backgroundColor": "#ffffff"
       },
+      "googleServicesFile": "./google-services.json",
       "package": "com.neetisthebest.Duxin"
     },
     "web": {
       "favicon": "./assets/DuxinLogoFaviconCircle.png"
     },
-    "plugins": ["expo-router", "expo-localization", "expo-secure-store"],
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-secure-store",
+      "@react-native-firebase/app",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "useFrameworks": "static"
+          }
+        }
+      ]
+    ],
     "scheme": "duxin",
     "extra": {
       "router": {

@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import theme from '../theme';
 import IconButton from '../components/IconButton';
 import TextComponent from '../components/TextComponent';
+import firestore from '@react-native-firebase/firestore';
+import auth from '@react-native-firebase/auth';
 
 export default function Header() {
   const { user, setUser } = useUser();
@@ -33,7 +35,16 @@ export default function Header() {
         }
       }
     };
-    getUser();
+    const getUserFirebase = async () => {
+      try {
+        await auth().signInAnonymously();
+        console.log('user signed in anonymously');
+      } catch (error) {
+        console.log('error', error);
+      }
+    };
+    getUserFirebase();
+    // getUser();
   }, []);
 
   const onBack = () => {

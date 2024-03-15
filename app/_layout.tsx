@@ -1,4 +1,5 @@
-import { Slot } from 'expo-router';
+import { useEffect } from 'react';
+import { Slot, usePathname } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { StatusBar } from 'expo-status-bar';
 import Header from '../components/Header';
@@ -7,8 +8,25 @@ import { View, StyleSheet } from 'react-native';
 import { UserProvider } from '../contexts/UserContext';
 import '../utils/i18n';
 import theme from '../theme';
+import analytics from '@react-native-firebase/analytics';
 
 export default function Layout() {
+  const pathname = usePathname();
+  useEffect(() => {
+    const logScreenView = async () => {
+      console.log('pathname', pathname);
+      try {
+        await analytics().logScreenView({
+          screen_name: pathname,
+          screen_class: pathname,
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    logScreenView();
+  }, [pathname]);
+
   return (
     <UserProvider>
       <SafeAreaView style={styles.safeArea}>

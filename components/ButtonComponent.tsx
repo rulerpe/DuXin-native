@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import theme from '../theme';
 import TextComponent from '../components/TextComponent';
+import analytics from '@react-native-firebase/analytics';
 
 interface ButtonComponentProps {
   label: string;
@@ -16,9 +17,12 @@ export default function ButtonComponent({
   isLoading = false,
   size = 'large',
 }: ButtonComponentProps) {
-  const handlePress = () => {
+  const handlePress = async () => {
     if (!isLoading) {
       onPress();
+      await analytics().logEvent(label, {
+        button_name: label,
+      });
     }
   };
   const dynamicStyles = StyleSheet.create({
