@@ -29,5 +29,6 @@
   "summaryHistory": "History",
   "moreSummaryButton": "Load more",
   "deleteSummaryButton": "Delete",
-  "summaryGeneratePageError": "There is an error processing the image, please try again."
+  "summaryGeneratePageError": "There is an error processing the image, please try again.",
+  "changeLanguageFailed": "Change language failed"
 }

@@ -1,20 +1,23 @@
-import { useState, useEffect } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 import { router } from 'expo-router';
-import theme from '../theme';
-import ButtonComponent from '../components/ButtonComponent';
-import TextComponent from '../components/TextComponent';
-import LanguageSelector from '../components/LanguageSelector';
-import { useTakePhoto } from '../hooks/useTakePhoto';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import ApiService from '../services/ApiService';
+import { StyleSheet, ScrollView } from 'react-native';
+import Toast from 'react-native-toast-message';
+
+import ButtonComponent from '../components/ButtonComponent';
+import LanguageSelector from '../components/LanguageSelector';
+import TextComponent from '../components/TextComponent';
 import { useUser } from '../contexts/UserContext';
+import { useTakePhoto } from '../hooks/useTakePhoto';
+import ApiService from '../services/ApiService';
+import theme from '../theme';
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { image, takePhoto } = useTakePhoto();
   const { t, i18n } = useTranslation();
-  const { setUser } = useUser();
+  const { user, setUser } = useUser();
 
   useEffect(() => {
     const uploadImage = async () => {
@@ -38,12 +41,18 @@ export default function HomePage() {
 
   const handleLanguageChange = async (language: string) => {
     try {
-      setIsLoading(true);
-      const response = await ApiService.updateUserLanguage(language);
-      i18n.changeLanguage(language);
-      setUser(response.user);
+      if (user) {
+        setIsLoading(true);
+        await firestore().collection('users').doc(user.id).update({ language });
+        i18n.changeLanguage(language);
+        setUser({ ...user, language });
+      }
     } catch (error) {
-      console.error('Change language failed');
+      console.error('Change language failed', error);
+      Toast.show({
+        type: 'error',
+        text1: t('changeLanguageFailed'),
+      });
     } finally {
       setIsLoading(false);
     }
@@ -51,7 +60,7 @@ export default function HomePage() {
   return (
     <ScrollView style={styles.homePage} contentContainerStyle={styles.contentContainer}>
       <TextComponent style={styles.welcomeText}>{t('welcomText')}</TextComponent>
-      <ButtonComponent label={t('navigateToCamera')} onPress={takePhoto} isLoading={isLoading} />
+      <ButtonComponent label="navigateToCamera" onPress={takePhoto} isLoading={isLoading} />
       <LanguageSelector onLanguageChange={handleLanguageChange} isDisabled={isLoading} />
     </ScrollView>
   );

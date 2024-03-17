@@ -1,24 +1,21 @@
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { View, StyleSheet, TextInput, Keyboard, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, TextInput, Keyboard, ScrollView } from 'react-native';
+import Toast from 'react-native-toast-message';
+
 import ButtonComponent from '../components/ButtonComponent';
 import TextComponent, { defaultMaxFontSizeMultiplier } from '../components/TextComponent';
 import theme from '../theme';
-import ApiService from '../services/ApiService';
-import { useUser } from '../contexts/UserContext';
-import { router } from 'expo-router';
-import Toast from 'react-native-toast-message';
-
-type SetStateAction = React.Dispatch<React.SetStateAction<string>>;
 
 export default function LoginPage() {
   const [phoneNumber, setPhoneNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
-  const [otpSent, setOtpSent] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { t, i18n } = useTranslation();
-  const { user, setUser } = useUser();
+  const { t } = useTranslation();
+  const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
 
   // Validation functions
   const validatePhoneNumber = (number: string): boolean =>
@@ -27,7 +24,7 @@ export default function LoginPage() {
 
   const handleInputChange = (text: string) => {
     setError('');
-    if (otpSent) {
+    if (confirm) {
       setOtp(text);
     } else {
       setPhoneNumber(text);
@@ -47,11 +44,11 @@ export default function LoginPage() {
 
     try {
       setIsLoading(true);
-      console.log('create user');
-      await ApiService.createUser(formattedPhoneNumber, i18n.language);
-      setOtpSent(true);
+      console.log('handlePhoneNumberSubmit');
+      const confirmation = await auth().signInWithPhoneNumber(formattedPhoneNumber);
+      setConfirm(confirmation);
       Keyboard.dismiss();
-    } catch (error) {
+    } catch {
       setError(t('submitPhoneNumberFailed'));
     } finally {
       setIsLoading(false);
@@ -67,9 +64,7 @@ export default function LoginPage() {
     }
     try {
       setIsLoading(true);
-      const otpVerifyResponse = await ApiService.otpVerify(phoneNumber, otp, user);
-      setUser(otpVerifyResponse.user);
-      i18n.changeLanguage(otpVerifyResponse.user.language);
+      await confirm?.confirm(otp);
       Toast.show({
         type: 'success',
         text1: t('loginSuccess'),
@@ -77,6 +72,7 @@ export default function LoginPage() {
       router.navigate('/');
       Keyboard.dismiss();
     } catch (error) {
+      console.log('submit otp failed', error);
       setError(t('submitOTPFailed'));
     } finally {
       setIsLoading(false);
@@ -84,7 +80,7 @@ export default function LoginPage() {
   };
   return (
     <ScrollView style={styles.loginPageWrapper} contentContainerStyle={styles.contentContainer}>
-      {!otpSent ? (
+      {!confirm ? (
         <View style={styles.iputsWrapper}>
           <TextComponent style={styles.loginInstruction}>{t('signinPhoneNumber')}</TextComponent>
           <TextInput
@@ -100,7 +96,7 @@ export default function LoginPage() {
           />
           {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
           <ButtonComponent
-            label={t('submitPhoneNumber')}
+            label="submitPhoneNumber"
             onPress={handlePhoneNumberSubmit}
             isLoading={isLoading}
           />
@@ -120,7 +116,7 @@ export default function LoginPage() {
             maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
           />
           {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
-          <ButtonComponent label={t('submitOTP')} onPress={handleOtpSubmit} isLoading={isLoading} />
+          <ButtonComponent label="submitOTP" onPress={handleOtpSubmit} isLoading={isLoading} />
         </View>
       )}
     </ScrollView>

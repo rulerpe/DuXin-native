@@ -44,7 +44,7 @@ export default function SummaryRow({ summary, onDelete, rowNumber }: SummaryRowP
       </Link>
       <View>
         <ButtonComponent
-          label={t('deleteSummaryButton')}
+          label="deleteSummaryButton"
           onPress={() => onDelete(summary.id)}
           size="medium"
         />

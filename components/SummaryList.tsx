@@ -43,10 +43,7 @@ export default function SummaryList() {
       )}
       keyExtractor={(summary, index) => `${summary.id}${index}`}
       ListFooterComponent={() => (
-        <ButtonComponent
-          label={t('moreSummaryButton')}
-          onPress={onMore}
-          isLoading={isGetMoreLoading}></ButtonComponent>
+        <ButtonComponent label="moreSummaryButton" onPress={onMore} isLoading={isGetMoreLoading} />
       )}
       ListFooterComponentStyle={styles.listFooter}
     />

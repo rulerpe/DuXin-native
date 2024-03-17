@@ -1,51 +1,15 @@
-import { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
 import { Link, router } from 'expo-router';
-import { isAxiosError } from 'axios';
-import ApiService from '../services/ApiService';
-import { useUser } from '../contexts/UserContext';
 import { useTranslation } from 'react-i18next';
-import theme from '../theme';
+import { View, StyleSheet } from 'react-native';
+
 import IconButton from '../components/IconButton';
 import TextComponent from '../components/TextComponent';
-import firestore from '@react-native-firebase/firestore';
-import auth from '@react-native-firebase/auth';
+import { useUser } from '../contexts/UserContext';
+import theme from '../theme';
 
 export default function Header() {
-  const { user, setUser } = useUser();
-  const { t, i18n } = useTranslation();
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        const getUserResponse = await ApiService.fetchCurrentUser();
-        setUser(getUserResponse.user);
-        i18n.changeLanguage(getUserResponse.user.language);
-      } catch (error) {
-        // if no authuraized user if found, create a temp user account
-        if (isAxiosError(error) && error.response?.status === 401) {
-          try {
-            const tempUserResponse = await ApiService.createTempUser(i18n.language);
-            setUser(tempUserResponse.user);
-          } catch (error) {
-            console.error('Failed to create temp user', error);
-          }
-        } else {
-          console.error('Failed to fetch user', error);
-        }
-      }
-    };
-    const getUserFirebase = async () => {
-      try {
-        await auth().signInAnonymously();
-        console.log('user signed in anonymously');
-      } catch (error) {
-        console.log('error', error);
-      }
-    };
-    getUserFirebase();
-    // getUser();
-  }, []);
+  const { user } = useUser();
+  const { t } = useTranslation();
 
   const onBack = () => {
     if (router.canGoBack()) {
@@ -53,7 +17,7 @@ export default function Header() {
     }
   };
   const onUser = () => {
-    if (user && user.user_type === 'USER') {
+    if (user && user.userType === 'USER') {
       router.navigate('/account');
     } else {
       router.navigate('/login');

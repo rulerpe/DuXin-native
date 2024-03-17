@@ -1,23 +1,21 @@
-import { View, StyleSheet } from 'react-native';
+import auth from '@react-native-firebase/auth';
 import { router } from 'expo-router';
-import ButtonComponent from '../components/ButtonComponent';
-import TextComponent from '../components/TextComponent';
 import { useTranslation } from 'react-i18next';
-import ApiService from '../services/ApiService';
-import { useUser } from '../contexts/UserContext';
-import SummaryList from '../components/SummaryList';
+import { View, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 
+import ButtonComponent from '../components/ButtonComponent';
+import SummaryList from '../components/SummaryList';
+import TextComponent from '../components/TextComponent';
+import { useUser } from '../contexts/UserContext';
+
 export default function AccountPage() {
-  const { user, setUser } = useUser();
-  const { t, i18n } = useTranslation();
+  const { user } = useUser();
+  const { t } = useTranslation();
 
   const onLogout = async () => {
     try {
-      await ApiService.logout();
-      // Create a temp user account right after logout
-      const tempUserResponse = await ApiService.createTempUser(i18n.language);
-      setUser(tempUserResponse.user);
+      await auth().signOut();
       Toast.show({
         type: 'success',
         text1: t('logoutSuccess'),
@@ -35,12 +33,12 @@ export default function AccountPage() {
           </View>
           <View>
             <TextComponent allowFontScaling={false} style={styles.accountInfoPhoneNumber}>
-              {user?.phone_number}
+              {user?.phoneNumber}
             </TextComponent>
           </View>
         </View>
         <View style={styles.logoutBtn}>
-          <ButtonComponent label={t('logoutButton')} onPress={onLogout} size="medium" />
+          <ButtonComponent label="logoutButton" onPress={onLogout} size="medium" />
         </View>
       </View>
       <View style={styles.summaryListWrapper}>

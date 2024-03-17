@@ -1,7 +1,9 @@
-import { Pressable, StyleSheet, ActivityIndicator } from 'react-native';
-import theme from '../theme';
-import TextComponent from '../components/TextComponent';
 import analytics from '@react-native-firebase/analytics';
+import { useTranslation } from 'react-i18next';
+import { Pressable, StyleSheet, ActivityIndicator } from 'react-native';
+
+import TextComponent from '../components/TextComponent';
+import theme from '../theme';
 
 interface ButtonComponentProps {
   label: string;
@@ -17,6 +19,7 @@ export default function ButtonComponent({
   isLoading = false,
   size = 'large',
 }: ButtonComponentProps) {
+  const { t } = useTranslation();
   const handlePress = async () => {
     if (!isLoading) {
       onPress();
@@ -37,7 +40,7 @@ export default function ButtonComponent({
       {isLoading ? (
         <ActivityIndicator size="large" color={theme.colors.secondaryText} />
       ) : (
-        <TextComponent style={dynamicStyles.buttonLabel}>{label}</TextComponent>
+        <TextComponent style={dynamicStyles.buttonLabel}>{t(label)}</TextComponent>
       )}
     </Pressable>
   );

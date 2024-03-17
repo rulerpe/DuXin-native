@@ -1,14 +1,15 @@
-import { useEffect } from 'react';
+import analytics from '@react-native-firebase/analytics';
 import { Slot, usePathname } from 'expo-router';
-import Toast from 'react-native-toast-message';
 import { StatusBar } from 'expo-status-bar';
-import Header from '../components/Header';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Toast from 'react-native-toast-message';
+
+import Header from '../components/Header';
 import { UserProvider } from '../contexts/UserContext';
 import '../utils/i18n';
 import theme from '../theme';
-import analytics from '@react-native-firebase/analytics';
 
 export default function Layout() {
   const pathname = usePathname();

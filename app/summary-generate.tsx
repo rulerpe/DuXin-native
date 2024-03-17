@@ -50,7 +50,7 @@ export default function SummaryGeneratePage() {
       <View>
         <TextComponent style={styles.errorMessage}>{t('summaryGeneratePageError')}</TextComponent>
         <View style={styles.photoButtonWrapper}>
-          <ButtonComponent label={t('tryAgian')} onPress={onTryAgain} isLoading={isUploading} />
+          <ButtonComponent label="tryAgian" onPress={onTryAgain} isLoading={isUploading} />
         </View>
       </View>
     );
@@ -69,11 +69,7 @@ export default function SummaryGeneratePage() {
       <View>
         <SummaryDetail summary={summary} />
         <View style={styles.photoButtonWrapper}>
-          <ButtonComponent
-            label={t('navigateToCamera')}
-            onPress={takePhoto}
-            isLoading={isUploading}
-          />
+          <ButtonComponent label="navigateToCamera" onPress={takePhoto} isLoading={isUploading} />
         </View>
       </View>
     );
