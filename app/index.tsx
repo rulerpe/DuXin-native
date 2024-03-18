@@ -14,15 +14,13 @@ import theme from '../theme';
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { image, takePhoto } = usePhoto();
+  const { takePhoto } = usePhoto();
   const { t, i18n } = useTranslation();
   const { user, setUser } = useUser();
 
   const onTakePhoto = async () => {
     await takePhoto();
-    if (image) {
-      router.navigate('/summary-generate');
-    }
+    router.navigate('/summary-generate');
   };
 
   const handleLanguageChange = async (language: string) => {

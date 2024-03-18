@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: theme.font.large,
   },
   photoButtonWrapper: {
-    marginTop: 30,
+    marginVertical: 30,
   },
   errorMessage: {
     fontSize: theme.font.large,

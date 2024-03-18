@@ -42,7 +42,8 @@
     "react-native-screens": "~3.29.0",
     "react-native-toast-message": "^2.2.0",
     "react-native-uuid": "^2.0.1",
-    "react-native-web": "~0.19.6"
+    "react-native-web": "~0.19.6",
+    "expo-updates": "~0.24.12"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

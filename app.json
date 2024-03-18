@@ -11,7 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.neetisthebest.Duxin",
@@ -51,6 +53,10 @@
       "eas": {
         "projectId": "3a4029a8-7292-4a8a-9ad8-460a99504436"
       }
+    },
+    "runtimeVersion": "1.0.0",
+    "updates": {
+      "url": "https://u.expo.dev/3a4029a8-7292-4a8a-9ad8-460a99504436"
     }
   }
 }
