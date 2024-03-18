@@ -1,6 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 import { router } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -8,36 +8,22 @@ import Toast from 'react-native-toast-message';
 import ButtonComponent from '../components/ButtonComponent';
 import LanguageSelector from '../components/LanguageSelector';
 import TextComponent from '../components/TextComponent';
+import { usePhoto } from '../contexts/PhotoContext';
 import { useUser } from '../contexts/UserContext';
-import { useTakePhoto } from '../hooks/useTakePhoto';
-import ApiService from '../services/ApiService';
 import theme from '../theme';
 
 export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { image, takePhoto } = useTakePhoto();
+  const { image, takePhoto } = usePhoto();
   const { t, i18n } = useTranslation();
   const { user, setUser } = useUser();
 
-  useEffect(() => {
-    const uploadImage = async () => {
-      if (image) {
-        try {
-          setIsLoading(true);
-          const formData = new FormData();
-          //@ts-ignore
-          formData.append('image', { uri: image, type: 'image/jpeg', name: 'photo.jpg' });
-          await ApiService.uploadImage(formData);
-          router.navigate('/summary-generate');
-        } catch (error) {
-          console.error(error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-    uploadImage();
-  }, [image]);
+  const onTakePhoto = async () => {
+    await takePhoto();
+    if (image) {
+      router.navigate('/summary-generate');
+    }
+  };
 
   const handleLanguageChange = async (language: string) => {
     try {
@@ -60,7 +46,7 @@ export default function HomePage() {
   return (
     <ScrollView style={styles.homePage} contentContainerStyle={styles.contentContainer}>
       <TextComponent style={styles.welcomeText}>{t('welcomText')}</TextComponent>
-      <ButtonComponent label="navigateToCamera" onPress={takePhoto} isLoading={isLoading} />
+      <ButtonComponent label="navigateToCamera" onPress={onTakePhoto} isLoading={isLoading} />
       <LanguageSelector onLanguageChange={handleLanguageChange} isDisabled={isLoading} />
     </ScrollView>
   );

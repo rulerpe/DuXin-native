@@ -49,20 +49,34 @@ export const STAGES: { [key: string]: number } = {
 };
 
 export interface Summary {
-  created_at: string;
-  extracted_text: string;
-  id: number;
-  original_action: string;
-  original_body: string;
-  original_language: string | null;
-  original_title: string;
-  translated_action: string;
-  translated_body: string;
-  translated_title: string;
-  translation_language: string;
-  updated_at: string;
-  user_id: number;
+  id?: string;
+  createdAt: Date;
+  language: string;
+  userId: string;
+  summaryAction: string;
+  summaryBody: string;
+  summaryTitle: string;
+  imageName: string;
+  tokenUsed: string;
 }
+
+export interface SummaryResponse extends Summary {}
+
+// export interface Summary {
+//   created_at: string;
+//   extracted_text: string;
+//   id: number;
+//   original_action: string;
+//   original_body: string;
+//   original_language: string | null;
+//   original_title: string;
+//   translated_action: string;
+//   translated_body: string;
+//   translated_title: string;
+//   translation_language: string;
+//   updated_at: string;
+//   user_id: number;
+// }
 export interface ErrorResponse {
   message?: string;
 }

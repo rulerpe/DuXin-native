@@ -7,12 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:627666439362:android:9246306d6448ab09fa7f5b",
+        "mobilesdk_app_id": "1:627666439362:android:1c3252d935b35bcdfa7f5b",
         "android_client_info": {
-          "package_name": "com.neetisthebest.Duxin"
+          "package_name": "com.example.duxin"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "627666439362-u29ip28ctm1dfkdjkb0sfq78ma064jpe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.duxin",
+            "certificate_hash": "47275609a0987bebd9cdeb361cb049b37ab4f65d"
+          }
+        },
+        {
+          "client_id": "627666439362-2rq3odbvil3so3nph0gohnqavvqr6veg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBQ34EPFGOvL6ffmzMlklqgaGuKkrr5Fok"
@@ -20,7 +33,63 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627666439362-2rq3odbvil3so3nph0gohnqavvqr6veg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "627666439362-lotsrvhctn0d8109mo5jnjktho2t61sv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.duxin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627666439362:android:9246306d6448ab09fa7f5b",
+        "android_client_info": {
+          "package_name": "com.neetisthebest.Duxin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627666439362-562vpbbm1vmrgr9ld9p3s9vj1rkqod89.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neetisthebest.Duxin",
+            "certificate_hash": "47275609a0987bebd9cdeb361cb049b37ab4f65d"
+          }
+        },
+        {
+          "client_id": "627666439362-2rq3odbvil3so3nph0gohnqavvqr6veg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQ34EPFGOvL6ffmzMlklqgaGuKkrr5Fok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627666439362-2rq3odbvil3so3nph0gohnqavvqr6veg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "627666439362-lotsrvhctn0d8109mo5jnjktho2t61sv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.duxin"
+              }
+            }
+          ]
         }
       }
     }

@@ -26,9 +26,11 @@
   "phoneNumberLabel": "Phone Number",
   "logoutButton": "Logout",
   "logoutSuccess": "Logout successful.",
+  "logoutFailed": "Logout failed.",
   "summaryHistory": "History",
   "moreSummaryButton": "Load more",
   "deleteSummaryButton": "Delete",
   "summaryGeneratePageError": "There is an error processing the image, please try again.",
-  "changeLanguageFailed": "Change language failed"
+  "changeLanguageFailed": "Change language failed",
+  "takePhotoAgain": "Try again"
 }

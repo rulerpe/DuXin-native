@@ -1,24 +1,23 @@
+import { Link } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+
 import ButtonComponent from './ButtonComponent';
 import TextComponent from './TextComponent';
-import { Link } from 'expo-router';
-import { Summary } from '../types';
-import { useTranslation } from 'react-i18next';
 import theme from '../theme';
+import { Summary } from '../types';
 
 interface SummaryRowProp {
   summary: Summary;
-  onDelete: (id: number) => void;
+  onDelete: (id: string) => void;
   rowNumber: number;
 }
 
 export default function SummaryRow({ summary, onDelete, rowNumber }: SummaryRowProp) {
-  const { t, i18n } = useTranslation();
   const isDarkRowClass = (rowNumber: number): boolean => {
     return rowNumber % 2 === 0;
   };
-  const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
+  const formatDate = (createdAt: Date): string => {
+    const date = new Date(createdAt);
     return date.toLocaleDateString('en-US', {
       month: '2-digit',
       day: '2-digit',
@@ -32,20 +31,22 @@ export default function SummaryRow({ summary, onDelete, rowNumber }: SummaryRowP
           pathname: '/summary/[id]',
           params: {
             id: summary.id,
-            title: summary.translated_title,
-            body: summary.translated_body,
-            action: summary.translated_action,
+            title: summary.summaryTitle,
+            body: summary.summaryBody,
+            action: summary.summaryAction,
           },
         }}>
         <View>
-          <TextComponent>{formatDate(summary.created_at)}</TextComponent>
-          <TextComponent>{summary.translated_title}</TextComponent>
+          <TextComponent>{formatDate(summary.createdAt)}</TextComponent>
+          <TextComponent>{summary.summaryTitle}</TextComponent>
         </View>
       </Link>
       <View>
         <ButtonComponent
           label="deleteSummaryButton"
-          onPress={() => onDelete(summary.id)}
+          onPress={() => {
+            if (summary.id) onDelete(summary.id);
+          }}
           size="medium"
         />
       </View>

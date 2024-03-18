@@ -14,13 +14,13 @@
       },
 
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.duxinapp.com",
+        "EXPO_FIREBASE_FUNCTION_URL_GETIMAGESUMMARY": "https://us-central1-duxin-app.cloudfunctions.net/getImageSummary",
         "EXPO_PUBLIC_WEBSOCKET_URL": "wss://api.duxinapp.com/cable"
       }
     },
     "production": {
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://api.duxinapp.com",
+        "EXPO_FIREBASE_FUNCTION_URL_GETIMAGESUMMARY": "https://us-central1-duxin-app.cloudfunctions.net/getImageSummary",
         "EXPO_PUBLIC_WEBSOCKET_URL": "wss://api.duxinapp.com/cable"
       }
     }

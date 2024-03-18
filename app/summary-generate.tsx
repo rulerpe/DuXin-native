@@ -1,44 +1,44 @@
-import { useEffect, useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { useTranslation } from 'react-i18next';
-import ProgressBar from '../components/ProgressBar';
-import SummaryDetail, { SummaryDetailProps } from '../components/SummaryDetail';
-import ButtonComponent from '../components/ButtonComponent';
-import TextComponent from '../components/TextComponent';
-import { useTakePhoto } from '../hooks/useTakePhoto';
-import theme from '../theme';
-import useActionCable from '../hooks/useActionCable';
-import { STAGES } from '../types';
-import ApiService from '../services/ApiService';
+import functions from '@react-native-firebase/functions';
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import * as Progress from 'react-native-progress';
+
+import ButtonComponent from '../components/ButtonComponent';
+import SummaryDetail, { SummaryDetailProps } from '../components/SummaryDetail';
+import TextComponent from '../components/TextComponent';
+import { usePhoto } from '../contexts/PhotoContext';
+import theme from '../theme';
+import { Summary } from '../types';
 
 export default function SummaryGeneratePage() {
-  const { image, takePhoto } = useTakePhoto();
-  const [isUploading, setIsUploading] = useState(false);
-  const { currentStage, translatedSummary, resetStage } = useActionCable(
-    'SummaryTranslationChannel',
-  );
-  const [uploadError, setUploadError] = useState(false);
-  const { t } = useTranslation();
+  const { image, takePhoto } = usePhoto();
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const { t, i18n } = useTranslation();
+  const [summary, setSummary] = useState<Summary>();
 
   useEffect(() => {
-    const uploadImage = async () => {
+    const processImage = async () => {
       if (image) {
-        resetStage();
+        console.log('process Imgage');
         try {
-          setIsUploading(true);
-          const formData = new FormData();
-          //@ts-ignore
-          formData.append('image', { uri: image, type: 'image/jpeg', name: 'photo.jpg' });
-          await ApiService.uploadImage(formData);
+          setIsLoading(true);
+          const { data } = await functions().httpsCallable('getImageSummary')({
+            image,
+            language: i18n.language,
+          });
+          setSummary(data);
         } catch (error) {
-          setUploadError(true);
+          setHasError(true);
+          console.log('error', error);
         } finally {
-          setIsUploading(false);
+          setIsLoading(false);
         }
       }
     };
-    uploadImage();
+    processImage();
   }, [image]);
 
   const onTryAgain = () => {
@@ -50,7 +50,7 @@ export default function SummaryGeneratePage() {
       <View>
         <TextComponent style={styles.errorMessage}>{t('summaryGeneratePageError')}</TextComponent>
         <View style={styles.photoButtonWrapper}>
-          <ButtonComponent label="tryAgian" onPress={onTryAgain} isLoading={isUploading} />
+          <ButtonComponent label="takePhotoAgain" onPress={onTryAgain} />
         </View>
       </View>
     );
@@ -58,8 +58,14 @@ export default function SummaryGeneratePage() {
   const progressBarView = () => {
     return (
       <View style={styles.progressBarWrapper}>
-        <ProgressBar stages={Object.keys(STAGES)} currentStage={STAGES[currentStage]} />
-        <TextComponent style={styles.progressText}>{t(`${currentStage}`)}</TextComponent>
+        <Progress.Bar
+          indeterminate
+          indeterminateAnimationDuration={2000}
+          width={null}
+          height={30}
+          color={theme.colors.primary}
+        />
+        <TextComponent style={styles.progressText}>{t(`summarizing_text`)}</TextComponent>
       </View>
     );
   };
@@ -69,21 +75,21 @@ export default function SummaryGeneratePage() {
       <View>
         <SummaryDetail summary={summary} />
         <View style={styles.photoButtonWrapper}>
-          <ButtonComponent label="navigateToCamera" onPress={takePhoto} isLoading={isUploading} />
+          <ButtonComponent label="navigateToCamera" onPress={takePhoto} />
         </View>
       </View>
     );
   };
 
   const views = () => {
-    if (currentStage === 'error' || uploadError) {
+    if (hasError) {
       return errorView();
-    } else if (currentStage === 'summary_translation_completed' && translatedSummary) {
+    } else if (!isLoading && summary) {
       return summaryDetailView({
         summary: {
-          title: translatedSummary.title,
-          body: translatedSummary.body,
-          action: translatedSummary.action,
+          title: summary.summaryTitle,
+          body: summary.summaryBody,
+          action: summary.summaryAction,
         },
       });
     } else {

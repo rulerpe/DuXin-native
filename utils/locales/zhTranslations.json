@@ -26,8 +26,12 @@
   "phoneNumberLabel": "电话号码",
   "logoutButton": "登出",
   "logoutSuccess": "成功登出",
+  "logoutFailed": "登出失败",
   "summaryHistory": "历史",
   "moreSummaryButton": "更多",
   "deleteSummaryButton": "删除",
-  "summaryGeneratePageError": "出现错误，请再试一次"
+  "summaryGeneratePageError": "出现错误，请再试一次",
+  "changeLanguageFailed": "更换语言失败",
+  "takePhotoAgain": "拍照",
+  "fetchingSummariesFailed": "发生错误，请稍后再试"
 }

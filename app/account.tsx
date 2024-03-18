@@ -21,7 +21,13 @@ export default function AccountPage() {
         text1: t('logoutSuccess'),
       });
       router.navigate('/');
-    } catch (error) {}
+    } catch (error) {
+      console.log('logout error', error);
+      Toast.show({
+        type: 'error',
+        text1: t('logoutFailed'),
+      });
+    }
   };
 
   return (
