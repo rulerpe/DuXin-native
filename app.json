@@ -2,7 +2,7 @@
   "expo": {
     "name": "Duxin",
     "slug": "Duxin",
-    "version": "1.0.0",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/DuXinIconCircle.png",
     "userInterfaceStyle": "light",
@@ -25,7 +25,8 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.neetisthebest.Duxin"
+      "package": "com.neetisthebest.Duxin",
+      "versionCode": 3
     },
     "web": {
       "favicon": "./assets/DuxinLogoFaviconCircle.png"

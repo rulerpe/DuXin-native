@@ -1,5 +1,7 @@
 import * as Progress from 'react-native-progress';
+
 import theme from '../theme';
+
 interface ProgressBarProps {
   currentStage: number;
   stages: string[];

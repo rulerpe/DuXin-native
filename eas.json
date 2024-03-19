@@ -13,18 +13,11 @@
       "android": {
         "buildType": "apk"
       },
-      "env": {
-        "EXPO_FIREBASE_FUNCTION_URL_GETIMAGESUMMARY": "https://us-central1-duxin-app.cloudfunctions.net/getImageSummary",
-        "EXPO_PUBLIC_WEBSOCKET_URL": "wss://api.duxinapp.com/cable"
-      },
       "channel": "preview"
     },
     "production": {
-      "env": {
-        "EXPO_FIREBASE_FUNCTION_URL_GETIMAGESUMMARY": "https://us-central1-duxin-app.cloudfunctions.net/getImageSummary",
-        "EXPO_PUBLIC_WEBSOCKET_URL": "wss://api.duxinapp.com/cable"
-      },
-      "channel": "production"
+      "channel": "production",
+      "autoIncrement": true
     }
   },
   "submit": {

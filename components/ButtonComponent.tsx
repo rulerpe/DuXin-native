@@ -23,8 +23,9 @@ export default function ButtonComponent({
   const handlePress = async () => {
     if (!isLoading) {
       onPress();
-      await analytics().logEvent(label, {
-        button_name: label,
+      const formatLabel = label.replace(' ', '_');
+      await analytics().logEvent(formatLabel, {
+        button_name: formatLabel,
       });
     }
   };

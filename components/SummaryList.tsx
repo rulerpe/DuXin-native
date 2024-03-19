@@ -1,7 +1,7 @@
 import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from './ButtonComponent';
@@ -33,6 +33,9 @@ export default function SummaryList() {
       }
 
       const documentSnapshots = await query.get();
+      if (documentSnapshots.empty) {
+        return;
+      }
       lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1] || null;
       if (documentSnapshots.docs.length < 10) {
         setNoMore(true);
@@ -77,6 +80,7 @@ export default function SummaryList() {
         <SummaryRow summary={item} onDelete={onDelete} rowNumber={index} />
       )}
       keyExtractor={(summary, index) => `${summary.id}${index}`}
+      ListEmptyComponent={() => <Text style={styles.noSummary}>{t('noSummary')}</Text>}
       ListFooterComponent={() =>
         !noMore && (
           <ButtonComponent
@@ -95,5 +99,8 @@ const styles = StyleSheet.create({
   darkRow: {},
   listFooter: {
     padding: 15,
+  },
+  noSummary: {
+    textAlign: 'center',
   },
 });

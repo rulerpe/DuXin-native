@@ -15,7 +15,7 @@ export default function LanguageSelector({
 }: LanguageSelectorProps) {
   const { user } = useUser();
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(user?.language);
+  const [value, setValue] = useState(user?.language || 'en');
   const languageOptions: ItemType<any>[] = [
     { label: '中文', value: 'zh' },
     { label: 'English', value: 'en' },
@@ -24,7 +24,7 @@ export default function LanguageSelector({
   ];
 
   useEffect(() => {
-    setValue(user?.language);
+    setValue(user?.language || 'en');
   }, [user?.language]);
   const handleLanguageChange = (selectedItem: ItemType<any>) => {
     if (onLanguageChange && selectedItem) {
@@ -41,7 +41,7 @@ export default function LanguageSelector({
         setValue={setValue}
         disabled={isDisabled}
         labelProps={{ maxFontSizeMultiplier: defaultMaxFontSizeMultiplier }}
-        listMode={'SCROLLVIEW'}
+        listMode="SCROLLVIEW"
         itemProps={{
           style: {
             height: 40 * PixelRatio.getFontScale(),

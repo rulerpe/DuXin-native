@@ -18,9 +18,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const { t, i18n } = useTranslation();
   if (__DEV__) {
-    auth().useEmulator('http://localhost:9099');
-    firestore().useEmulator('localhost', 8080);
-    functions().useEmulator('localhost', 5001);
+    try {
+      auth().useEmulator('http://localhost:9099');
+      firestore().useEmulator('localhost', 8080);
+      functions().useEmulator('localhost', 5001);
+    } catch (error) {
+      console.log('emulator error', error);
+    }
   }
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {

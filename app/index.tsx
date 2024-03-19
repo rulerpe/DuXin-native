@@ -1,8 +1,8 @@
 import firestore from '@react-native-firebase/firestore';
-import { router } from 'expo-router';
+import { router, Link } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, ScrollView, Text } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from '../components/ButtonComponent';
@@ -46,6 +46,9 @@ export default function HomePage() {
       <TextComponent style={styles.welcomeText}>{t('welcomText')}</TextComponent>
       <ButtonComponent label="navigateToCamera" onPress={onTakePhoto} isLoading={isLoading} />
       <LanguageSelector onLanguageChange={handleLanguageChange} isDisabled={isLoading} />
+      <Link style={styles.privacyPolicyLink} href="/privacy-policy">
+        <Text>{t('privacyPolicyLink')}</Text>
+      </Link>
     </ScrollView>
   );
 }
@@ -65,5 +68,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 20,
     textAlign: 'center',
+  },
+  privacyPolicyLink: {
+    fontSize: 9,
+    textDecorationLine: 'underline',
   },
 });

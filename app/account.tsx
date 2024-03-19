@@ -1,5 +1,5 @@
 import auth from '@react-native-firebase/auth';
-import { router } from 'expo-router';
+import { router, Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -34,14 +34,16 @@ export default function AccountPage() {
     <View style={styles.accountPageWrapper}>
       <View style={styles.accountInfoWrapper}>
         <View style={styles.accountInfoRow}>
-          <View style={styles.accountInfoLabel}>
-            <TextComponent allowFontScaling={false}>{t('phoneNumberLabel')}:</TextComponent>
-          </View>
-          <View>
-            <TextComponent allowFontScaling={false} style={styles.accountInfoPhoneNumber}>
-              {user?.phoneNumber}
-            </TextComponent>
-          </View>
+          <Link href={{ pathname: '/account-detail' }}>
+            <View style={styles.accountInfoLabel}>
+              <TextComponent allowFontScaling={false}>{t('phoneNumberLabel')}:</TextComponent>
+            </View>
+            <View>
+              <TextComponent allowFontScaling={false} style={styles.accountInfoPhoneNumber}>
+                {user?.phoneNumber}
+              </TextComponent>
+            </View>{' '}
+          </Link>
         </View>
         <View style={styles.logoutBtn}>
           <ButtonComponent label="logoutButton" onPress={onLogout} size="medium" />

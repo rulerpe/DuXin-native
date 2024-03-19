@@ -1,6 +1,6 @@
 {
   "appName": "Duxin",
-  "welcomText": "Take a picture of a letter, see summary and translation",
+  "welcomText": "Snap, translate, and summarize your letter in seconds.",
   "navigateToCamera": "Take a picture",
   "capturePhoto": "Capture photo",
   "selectPhoto": "Select photo",
@@ -32,5 +32,16 @@
   "deleteSummaryButton": "Delete",
   "summaryGeneratePageError": "There is an error processing the image, please try again.",
   "changeLanguageFailed": "Change language failed",
-  "takePhotoAgain": "Try again"
+  "takePhotoAgain": "Try again",
+  "fetchingSummariesFailed": "Error fetching summaries",
+  "deleteAccountBtn": "Delete My Account",
+  "deleteAccountAlertTitle":"Delete Account",
+  "deleteAccountAlertBody":"Are you sure you want to delete your account? This action cannot be undone, and all your data will be permanently deleted.",
+  "deleteAccountAlertCancelBtn":"Cancel",
+  "deleteAccountAlertDeleteBtn":"Delete",
+  "AccountDeletedAlertTitle":"Account Deleted",
+  "AccountDeletedAlertBody":"Your account has been successfully deleted.",
+  "AccountDeleteError": "There was an error deleting your account. Please try again later.",
+  "noSummary": "Empty",
+  "privacyPolicyLink": "Privacy Policy"
 }

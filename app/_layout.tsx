@@ -47,9 +47,9 @@ export default function Layout() {
           <View style={styles.contentContainer}>
             <Slot />
           </View>
-          <StatusBar style="dark" />
           <Toast />
         </View>
+        <StatusBar style="dark" />
       </SafeAreaView>
     </AppContextProvider>
   );

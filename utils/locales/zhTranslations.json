@@ -33,5 +33,14 @@
   "summaryGeneratePageError": "出现错误，请再试一次",
   "changeLanguageFailed": "更换语言失败",
   "takePhotoAgain": "拍照",
-  "fetchingSummariesFailed": "发生错误，请稍后再试"
+  "fetchingSummariesFailed": "发生错误，请稍后再试",
+  "deleteAccountBtn": "删除账号",
+  "deleteAccountAlertTitle":"删除账号",
+  "deleteAccountAlertBody":"您确定要删除您的账户吗？此操作无法撤销，您的所有数据将被永久删除。",
+  "deleteAccountAlertCancelBtn":"取消",
+  "deleteAccountAlertDeleteBtn":"删除",
+  "AccountDeletedAlertTitle":"账号已删除",
+  "AccountDeletedAlertBody":"您的账户已成功删除。",
+  "AccountDeleteError": "删除您的账户时出错。请稍后再试。",
+  "noSummary": "无"
 }
