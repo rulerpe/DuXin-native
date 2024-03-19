@@ -1,3 +1,4 @@
+import appCheck from '@react-native-firebase/app-check';
 import analytics from '@react-native-firebase/analytics';
 import { Slot, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -15,6 +16,41 @@ export default function Layout() {
   const pathname = usePathname();
 
   useEffect(() => {
+    const setupFirebaseAppCheck = async () => {
+      console.log('setupFirebaseAppCheck');
+      try {
+        const rnfbProvider = appCheck().newReactNativeFirebaseAppCheckProvider();
+        rnfbProvider.configure({
+          android: {
+            provider: __DEV__ ? 'debug' : 'playIntegrity',
+            debugToken: '55F7F208-4F99-40D9-A383-7B575CEAF50B',
+          },
+          apple: {
+            provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
+            debugToken: '55F7F208-4F99-40D9-A383-7B575CEAF50B',
+          },
+          web: {
+            provider: 'reCaptchaV3',
+            siteKey: 'unknown',
+          },
+        });
+        console.log('rnfbProvider', rnfbProvider);
+        await appCheck().initializeAppCheck({
+          provider: rnfbProvider,
+          isTokenAutoRefreshEnabled: true,
+        });
+
+        console.log('initializeAppCheck');
+        const { token } = await appCheck().getToken(true);
+        console.log('appcheck token', token);
+        if (token.length > 0) {
+          console.log('AppCheck verification passed');
+        }
+      } catch (error) {
+        console.log('AppCheck verification failed', error);
+      }
+    };
+    setupFirebaseAppCheck();
     if (!__DEV__) {
       // Enable Firebase Analytics for production
       analytics().setAnalyticsCollectionEnabled(true);
