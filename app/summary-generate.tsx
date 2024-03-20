@@ -13,36 +13,46 @@ import theme from '../theme';
 import { Summary } from '../types';
 
 export default function SummaryGeneratePage() {
-  const { image, takePhoto } = usePhoto();
+  const { image, takePhoto, clearImage } = usePhoto();
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const { t, i18n } = useTranslation();
-  const [summary, setSummary] = useState<Summary>();
+  const [summary, setSummary] = useState<Summary | null>(null);
 
   useEffect(() => {
-    const processImage = async () => {
-      if (image) {
-        console.log('process Imgage');
-        try {
-          setIsLoading(true);
-          const { data } = await functions().httpsCallable('getImageSummary')({
-            image,
-            language: i18n.language,
-          });
-          setSummary(data);
-        } catch (error) {
-          setHasError(true);
-          console.log('error', error);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-    };
-    processImage();
-  }, [image]);
+    if (image) {
+      processImage();
+    } else {
+      // redirect to home page if visit without any image
+      router.replace('/');
+    }
+    return clearImage;
+  }, []);
+
+  const processImage = async () => {
+    console.log('process Imgage');
+    try {
+      setIsLoading(true);
+      const { data } = await functions().httpsCallable('getImageSummary')({
+        image,
+        language: i18n.language,
+      });
+      setSummary(data);
+    } catch (error) {
+      setHasError(true);
+      console.log('error', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const onTryAgain = () => {
     router.navigate('/');
+  };
+
+  const onTakePhoto = async () => {
+    await takePhoto();
+    await processImage();
   };
 
   const errorView = () => {
@@ -75,7 +85,7 @@ export default function SummaryGeneratePage() {
       <View>
         <SummaryDetail summary={summary} />
         <View style={styles.photoButtonWrapper}>
-          <ButtonComponent label="navigateToCamera" onPress={takePhoto} />
+          <ButtonComponent label="navigateToCamera" onPress={onTakePhoto} />
         </View>
       </View>
     );

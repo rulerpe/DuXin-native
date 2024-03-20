@@ -44,7 +44,7 @@ export default function LanguageSelector({
         listMode="SCROLLVIEW"
         itemProps={{
           style: {
-            height: 40 * PixelRatio.getFontScale(),
+            height: 50 * PixelRatio.getFontScale(),
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',

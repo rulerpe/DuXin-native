@@ -14,6 +14,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "627666439362-e9d5fddk6r6m89gn0mkrq42eo6lr8n8r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.duxin",
+            "certificate_hash": "e7f20bb3eb9fd6e8108c2f35a52a7369a62cda3c"
+          }
+        },
+        {
+          "client_id": "627666439362-rql542pf7e8j41o2to9j7tesmu0jc4kh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.duxin",
+            "certificate_hash": "8df1bee7d291cd356ddba680b7020363a06da48c"
+          }
+        },
+        {
           "client_id": "627666439362-u29ip28ctm1dfkdjkb0sfq78ma064jpe.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -63,6 +79,22 @@
           "android_info": {
             "package_name": "com.neetisthebest.Duxin",
             "certificate_hash": "47275609a0987bebd9cdeb361cb049b37ab4f65d"
+          }
+        },
+        {
+          "client_id": "627666439362-qvussfbknoagatpcfugst1ria72u5a7c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neetisthebest.Duxin",
+            "certificate_hash": "e7f20bb3eb9fd6e8108c2f35a52a7369a62cda3c"
+          }
+        },
+        {
+          "client_id": "627666439362-s1ru91sk93tam0fvvr9b1fkvh81ji0a9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neetisthebest.Duxin",
+            "certificate_hash": "8df1bee7d291cd356ddba680b7020363a06da48c"
           }
         },
         {

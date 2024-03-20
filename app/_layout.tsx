@@ -23,11 +23,11 @@ export default function Layout() {
         rnfbProvider.configure({
           android: {
             provider: __DEV__ ? 'debug' : 'playIntegrity',
-            debugToken: '55F7F208-4F99-40D9-A383-7B575CEAF50B',
+            debugToken: 'A7E5034E-F482-4C93-9D63-646B795EBE0B',
           },
           apple: {
             provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
-            debugToken: '55F7F208-4F99-40D9-A383-7B575CEAF50B',
+            debugToken: 'A7E5034E-F482-4C93-9D63-646B795EBE0B',
           },
           web: {
             provider: 'reCaptchaV3',

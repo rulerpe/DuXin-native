@@ -6,6 +6,7 @@ import { Alert } from 'react-native';
 interface PhotoContextType {
   image: string | null;
   takePhoto: () => Promise<void>;
+  clearImage: () => void;
 }
 
 const PhotoContext = createContext<PhotoContextType | undefined>(undefined);
@@ -14,7 +15,7 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
   const [image, setImage] = useState<string | null>(null);
 
   const compressImage = async (uri: string) => {
-    const compressedImage = await await ImageManipulator.manipulateAsync(
+    const compressedImage = await ImageManipulator.manipulateAsync(
       uri,
       [{ resize: { height: 1000 } }],
       {
@@ -45,7 +46,15 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  return <PhotoContext.Provider value={{ image, takePhoto }}>{children}</PhotoContext.Provider>;
+  const clearImage = () => {
+    setImage(null);
+  };
+
+  return (
+    <PhotoContext.Provider value={{ image, takePhoto, clearImage }}>
+      {children}
+    </PhotoContext.Provider>
+  );
 };
 
 export const usePhoto = () => {
