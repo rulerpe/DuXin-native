@@ -1,7 +1,7 @@
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { useState, createContext, useContext, ReactNode } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Platform } from 'react-native';
 
 interface PhotoContextType {
   image: string | null;
@@ -29,19 +29,26 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const takePhoto = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    if (permissionResult.granted === false) {
-      Alert.alert('Permission Required', 'You need to grant camera permissions to take a photo.');
-      return;
+    let result: ImagePicker.ImagePickerResult;
+    if (__DEV__ || Platform.OS === 'web') {
+      result = await ImagePicker.launchImageLibraryAsync({
+        quality: 1,
+      });
+    } else {
+      const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+      if (permissionResult.granted === false) {
+        Alert.alert('Permission Required', 'You need to grant camera permissions to take a photo.');
+        return;
+      }
+
+      // Launch camera
+      result = await ImagePicker.launchCameraAsync({
+        cameraType: ImagePicker.CameraType.back,
+        quality: 1,
+      });
     }
 
-    // Launch camera
-    const result = await ImagePicker.launchCameraAsync({
-      cameraType: ImagePicker.CameraType.back,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
+    if (!result?.canceled) {
       await compressImage(result.assets[0].uri);
     }
   };
