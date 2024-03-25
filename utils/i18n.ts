@@ -1,9 +1,14 @@
+import { getLocales } from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { getLocales } from 'expo-localization';
+
 import enTranslation from './locales/enTranslations.json';
 import esTranslation from './locales/esTranslations.json';
 import frTranslation from './locales/frTranslations.json';
+import koTranslation from './locales/koTranslations.json';
+import ruTranslation from './locales/ruTranslations.json';
+import tlTranslation from './locales/tlTranslations.json';
+import viTranslation from './locales/viTranslations.json';
 import zhTranslation from './locales/zhTranslations.json';
 
 const resources = {
@@ -18,6 +23,18 @@ const resources = {
   },
   zh: {
     translation: zhTranslation,
+  },
+  ko: {
+    translation: koTranslation,
+  },
+  ru: {
+    translation: ruTranslation,
+  },
+  tl: {
+    translation: tlTranslation,
+  },
+  vi: {
+    translation: viTranslation,
   },
 };
 

@@ -1,7 +1,8 @@
-import { View, StyleSheet } from 'react-native';
-import theme from '../theme';
-import TextComponent from '../components/TextComponent';
 import { useTranslation } from 'react-i18next';
+import { View, StyleSheet } from 'react-native';
+
+import TextComponent from '../components/TextComponent';
+import theme from '../theme';
 
 export type SummaryDetailType = {
   title: string;
@@ -13,7 +14,7 @@ export interface SummaryDetailProps {
 }
 
 export default function SummaryDetail({ summary }: SummaryDetailProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <View style={styles.summaryDetailWrapper}>
       <TextComponent style={styles.label}>{t('summaryTitle')}</TextComponent>

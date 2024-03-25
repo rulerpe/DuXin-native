@@ -43,5 +43,7 @@
   "AccountDeletedAlertBody":"Your account has been successfully deleted.",
   "AccountDeleteError": "There was an error deleting your account. Please try again later.",
   "noSummary": "Empty",
-  "privacyPolicyLink": "Privacy Policy"
+  "privacyPolicyLink": "Privacy Policy",
+  "CameraPermissionRequiredTitle": "Permission Required",
+  "CameraPermissionRequiredBody": "You need to grant camera permissions to take a photo."
 }

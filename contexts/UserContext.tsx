@@ -28,11 +28,9 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
-    console.log('onAuthStateChanged triggered');
     try {
       if (user) {
         const userMeta = await firestore().collection('users').doc(user.uid).get();
-        console.log('userMeta', userMeta.data());
         // save user token for request to firebase function.
         // if (Platform.OS !== 'web') {
         //   const userToken = await user?.getIdToken();
@@ -52,7 +50,6 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             userType: user.isAnonymous ? 'TEMP' : ('USER' as 'TEMP' | 'USER'),
           };
           await firestore().collection('users').doc(user.uid).set(userMetaObj);
-          console.log('set data');
           setUser(userMetaObj);
         }
       } else {

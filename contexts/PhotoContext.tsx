@@ -1,6 +1,7 @@
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as ImagePicker from 'expo-image-picker';
 import { useState, createContext, useContext, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Platform } from 'react-native';
 
 interface PhotoContextType {
@@ -13,6 +14,7 @@ const PhotoContext = createContext<PhotoContextType | undefined>(undefined);
 
 export const PhotoProvider = ({ children }: { children: ReactNode }) => {
   const [image, setImage] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const compressImage = async (uri: string) => {
     const compressedImage = await ImageManipulator.manipulateAsync(
@@ -37,7 +39,7 @@ export const PhotoProvider = ({ children }: { children: ReactNode }) => {
     } else {
       const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
       if (permissionResult.granted === false) {
-        Alert.alert('Permission Required', 'You need to grant camera permissions to take a photo.');
+        Alert.alert(t('CameraPermissionRequiredTitle'), t('CameraPermissionRequiredBody'));
         return;
       }
 

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { View, StyleSheet, PixelRatio } from 'react-native';
-import { defaultMaxFontSizeMultiplier } from '../components/TextComponent';
 import DropDownPicker, { ItemType } from 'react-native-dropdown-picker';
-import theme from '../theme';
+
+import { defaultMaxFontSizeMultiplier } from '../components/TextComponent';
 import { useUser } from '../contexts/UserContext';
+import theme from '../theme';
 
 interface LanguageSelectorProps {
   onLanguageChange?: (language: string) => void;
@@ -21,6 +22,10 @@ export default function LanguageSelector({
     { label: 'English', value: 'en' },
     { label: 'Español', value: 'es' },
     { label: 'Français', value: 'fr' },
+    { label: '한국어', value: 'ko' },
+    { label: 'Русский', value: 'ru' },
+    { label: 'Tiếng Việt', value: 'vi' },
+    { label: 'Tagalog', value: 'tl' },
   ];
 
   useEffect(() => {

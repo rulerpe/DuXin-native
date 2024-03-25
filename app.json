@@ -17,7 +17,8 @@
     "ios": {
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.neetisthebest.Duxin",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "3"
     },
     "android": {
       "adaptiveIcon": {
@@ -26,7 +27,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.neetisthebest.Duxin",
-      "versionCode": 9
+      "versionCode": 11
     },
     "web": {
       "favicon": "./assets/DuxinLogoFaviconCircle.png"
