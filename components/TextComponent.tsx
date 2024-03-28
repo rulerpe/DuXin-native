@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text as RNText, TextProps, StyleSheet } from 'react-native';
+
 import theme from '../theme';
 
 export const defaultMaxFontSizeMultiplier = 1.5;

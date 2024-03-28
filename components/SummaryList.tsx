@@ -1,4 +1,4 @@
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, StyleSheet, Text } from 'react-native';
@@ -7,6 +7,7 @@ import Toast from 'react-native-toast-message';
 import ButtonComponent from './ButtonComponent';
 import SummaryRow from './SummaryRow';
 import { useUser } from '../contexts/UserContext';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import { Summary } from '../types';
 
 export default function SummaryList() {
@@ -16,27 +17,20 @@ export default function SummaryList() {
   const [noMore, setNoMore] = useState<boolean>(false);
   const [isGetMoreLoading, setIsGetMoreLoading] = useState<boolean>(false);
   const pageSize = 10;
-  let lastVisible: FirebaseFirestoreTypes.QueryDocumentSnapshot | null = null;
+  const [lastVisible, setLastVisible] = useState<any>(null);
 
-  const fetchSummaries = async (
-    cursor: FirebaseFirestoreTypes.QueryDocumentSnapshot | null = null,
-  ) => {
+  const fetchSummaries = async () => {
     try {
       setIsGetMoreLoading(true);
-      let query = firestore()
-        .collection('summaries')
-        .where('userId', '==', user?.id)
-        .orderBy('createdAt', 'desc')
-        .limit(pageSize);
-      if (cursor) {
-        query = query.startAfter(lastVisible);
-      }
-
-      const documentSnapshots = await query.get();
-      if (documentSnapshots.empty) {
+      const documentSnapshots = await FirebaseFactory.firestoreGetSummaries(
+        user?.id,
+        pageSize,
+        lastVisible,
+      );
+      if (documentSnapshots.docs.length === 0) {
         return;
       }
-      lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1] || null;
+      setLastVisible(documentSnapshots.docs[documentSnapshots.docs.length - 1] || null);
       if (documentSnapshots.docs.length < 10) {
         setNoMore(true);
       }
@@ -63,14 +57,14 @@ export default function SummaryList() {
   }, []);
 
   const onDelete = async (summaryId: string) => {
-    await firestore().collection('summaries').doc(summaryId).delete();
+    await FirebaseFactory.deleteSummary(summaryId);
     const updatedList = summaryList.filter((summary) => {
       return summary.id !== summaryId;
     });
     setSummaryList(updatedList);
   };
   const onMore = async () => {
-    await fetchSummaries(lastVisible);
+    await fetchSummaries();
   };
 
   return (

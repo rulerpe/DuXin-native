@@ -1,8 +1,8 @@
-import analytics from '@react-native-firebase/analytics';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 
 import TextComponent from '../components/TextComponent';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import theme from '../theme';
 
 interface ButtonComponentProps {
@@ -24,9 +24,7 @@ export default function ButtonComponent({
     if (!isLoading) {
       onPress();
       const formatLabel = label.replace(' ', '_');
-      await analytics().logEvent(formatLabel, {
-        button_name: formatLabel,
-      });
+      await FirebaseFactory.analyticsLogEvent(formatLabel);
     }
   };
   const dynamicStyles = StyleSheet.create({

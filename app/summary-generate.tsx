@@ -1,4 +1,3 @@
-import functions from '@react-native-firebase/functions';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -9,6 +8,7 @@ import ButtonComponent from '../components/ButtonComponent';
 import SummaryDetail, { SummaryDetailProps } from '../components/SummaryDetail';
 import TextComponent from '../components/TextComponent';
 import { usePhoto } from '../contexts/PhotoContext';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import theme from '../theme';
 import { Summary } from '../types';
 
@@ -28,15 +28,17 @@ export default function SummaryGeneratePage() {
     }
     return clearImage;
   }, []);
+  useEffect(() => {
+    if (image) {
+      processImage();
+    }
+  }, [image]);
 
   const processImage = async () => {
     console.log('process Imgage');
     try {
       setIsLoading(true);
-      const { data } = await functions().httpsCallable('getImageSummary')({
-        image,
-        language: i18n.language,
-      });
+      const { data } = await FirebaseFactory.getImageSummary(image, i18n.language);
       setSummary(data);
     } catch (error) {
       setHasError(true);
@@ -52,7 +54,7 @@ export default function SummaryGeneratePage() {
 
   const onTakePhoto = async () => {
     await takePhoto();
-    await processImage();
+    // await processImage();
   };
 
   const errorView = () => {

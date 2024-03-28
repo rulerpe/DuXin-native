@@ -1,9 +1,10 @@
 import { Link, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text } from 'react-native';
 
 import IconButton from '../components/IconButton';
 import TextComponent from '../components/TextComponent';
+import ButtonComponent from '../components/ButtonComponent';
 import { useUser } from '../contexts/UserContext';
 import theme from '../theme';
 

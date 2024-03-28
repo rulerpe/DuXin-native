@@ -27,7 +27,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.neetisthebest.Duxin",
-      "versionCode": 11
+      "versionCode": 13
     },
     "web": {
       "favicon": "./assets/DuxinLogoFaviconCircle.png"

@@ -1,18 +1,25 @@
-import auth from '@react-native-firebase/auth';
 import { router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from '../components/ButtonComponent';
 import TextComponent from '../components/TextComponent';
 import { useUser } from '../contexts/UserContext';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 
 export default function AccountDetailPage() {
   const { user } = useUser();
   const { t } = useTranslation();
 
   const showConfirmationDialog = () => {
+    if (Platform.OS === 'web') {
+      showAlertWeb();
+    } else {
+      showAlertMobile();
+    }
+  };
+  const showAlertMobile = () => {
     Alert.alert(
       t('deleteAccountAlertTitle'),
       t('deleteAccountAlertBody'),
@@ -27,10 +34,19 @@ export default function AccountDetailPage() {
       { cancelable: false },
     );
   };
+  const showAlertWeb = () => {
+    const confirmDelete = window.confirm(t('deleteAccountAlertBody'));
+    if (confirmDelete) {
+      deleteAccount();
+    } else {
+      console.log('Account deletion canceled.');
+    }
+  };
 
   const deleteAccount = async () => {
+    console.log('delete account');
     try {
-      await auth().currentUser?.delete();
+      await FirebaseFactory.authDeleteUser();
       Alert.alert(t('AccountDeletedAlertTitle'), t('AccountDeletedAlertBody'));
       router.navigate('/');
     } catch (error) {

@@ -1,5 +1,3 @@
-import appCheck from '@react-native-firebase/app-check';
-import analytics from '@react-native-firebase/analytics';
 import { Slot, usePathname } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
@@ -9,6 +7,7 @@ import Toast from 'react-native-toast-message';
 
 import Header from '../components/Header';
 import { AppContextProvider } from '../contexts/AppContextProvider';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import '../utils/i18n';
 import theme from '../theme';
 
@@ -16,58 +15,26 @@ export default function Layout() {
   const pathname = usePathname();
 
   useEffect(() => {
+    if (__DEV__) {
+      try {
+        FirebaseFactory.setupEmulators();
+      } catch (error) {
+        console.log('emulator error', error);
+      }
+    }
     const setupFirebaseAppCheck = async () => {
       console.log('setupFirebaseAppCheck');
-      try {
-        const rnfbProvider = appCheck().newReactNativeFirebaseAppCheckProvider();
-        rnfbProvider.configure({
-          android: {
-            provider: __DEV__ ? 'debug' : 'playIntegrity',
-            debugToken: 'A7E5034E-F482-4C93-9D63-646B795EBE0B',
-          },
-          apple: {
-            provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
-            debugToken: 'A7E5034E-F482-4C93-9D63-646B795EBE0B',
-          },
-          web: {
-            provider: 'reCaptchaV3',
-            siteKey: 'unknown',
-          },
-        });
-        console.log('rnfbProvider', rnfbProvider);
-        await appCheck().initializeAppCheck({
-          provider: rnfbProvider,
-          isTokenAutoRefreshEnabled: true,
-        });
-
-        console.log('initializeAppCheck');
-        const { token } = await appCheck().getToken(true);
-        console.log('appcheck token', token);
-        if (token.length > 0) {
-          console.log('AppCheck verification passed');
-        }
-      } catch (error) {
-        console.log('AppCheck verification failed', error);
-      }
+      await FirebaseFactory.appCheckInit();
     };
     setupFirebaseAppCheck();
-    if (!__DEV__) {
-      // Enable Firebase Analytics for production
-      analytics().setAnalyticsCollectionEnabled(true);
-    } else {
-      // Disable Firebase Analytics for development
-      analytics().setAnalyticsCollectionEnabled(false);
-    }
+    FirebaseFactory.analyticsInit();
   }, []);
 
   useEffect(() => {
     const logScreenView = async () => {
       console.log('pathname', pathname);
       try {
-        await analytics().logScreenView({
-          screen_name: pathname,
-          screen_class: pathname,
-        });
+        await FirebaseFactory.analyticsLogPageView(pathname);
       } catch (err) {
         console.error(err);
       }

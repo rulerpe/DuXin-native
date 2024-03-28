@@ -1,4 +1,3 @@
-import firestore from '@react-native-firebase/firestore';
 import { router, Link } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +9,7 @@ import LanguageSelector from '../components/LanguageSelector';
 import TextComponent from '../components/TextComponent';
 import { usePhoto } from '../contexts/PhotoContext';
 import { useUser } from '../contexts/UserContext';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import theme from '../theme';
 
 export default function HomePage() {
@@ -27,7 +27,7 @@ export default function HomePage() {
     try {
       if (user) {
         setIsLoading(true);
-        await firestore().collection('users').doc(user.id).update({ language });
+        await FirebaseFactory.updateUserLanguage(user.id, language);
         i18n.changeLanguage(language);
         setUser({ ...user, language });
       }

@@ -1,12 +1,14 @@
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, TextInput, Keyboard, ScrollView } from 'react-native';
+import { View, StyleSheet, TextInput, Keyboard, ScrollView, Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from '../components/ButtonComponent';
 import TextComponent, { defaultMaxFontSizeMultiplier } from '../components/TextComponent';
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import theme from '../theme';
 
 export default function LoginPage() {
@@ -17,7 +19,9 @@ export default function LoginPage() {
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { t } = useTranslation();
-  const [confirm, setConfirm] = useState<FirebaseAuthTypes.ConfirmationResult | null>(null);
+  const [confirm, setConfirm] = useState<ConfirmationResult | null>(null);
+  const recaptchaVerifier = useRef<RecaptchaVerifier | null>(null);
+  const [captchaVerified, setCaptchaVerified] = useState<boolean>(false);
 
   // Validation functions
   const validatePhoneNumber = (number: string): boolean =>
@@ -33,7 +37,7 @@ export default function LoginPage() {
     }
   };
 
-  const verifyPhoneNumber = async () => {
+  const handlePhoneNumberSubmit = async () => {
     let formattedPhoneNumber = phoneNumber.trim();
     if (!formattedPhoneNumber.startsWith('+1')) {
       formattedPhoneNumber = `+1${formattedPhoneNumber}`;
@@ -44,37 +48,11 @@ export default function LoginPage() {
     }
     try {
       setIsLoading(true);
-      await auth()
-        .verifyPhoneNumber(formattedPhoneNumber)
-        .on('state_changed', async (phoneAuthSnapshot) => {
-          switch (phoneAuthSnapshot.state) {
-            case auth.PhoneAuthState.CODE_SENT:
-              console.log('code sent');
-              setVerificationId(phoneAuthSnapshot.verificationId);
-              setOtpSent(true);
-              setIsLoading(false);
-              break;
-            case auth.PhoneAuthState.AUTO_VERIFIED:
-              const { verificationId, code } = phoneAuthSnapshot;
-              if (verificationId && code) {
-                const credential = auth.PhoneAuthProvider.credential(verificationId, code);
-                await auth().signInWithCredential(credential);
-                Toast.show({
-                  type: 'success',
-                  text1: t('loginSuccess'),
-                });
-                router.navigate('/');
-              }
-              console.log('Phone number automatically verified');
-              break;
-            case auth.PhoneAuthState.AUTO_VERIFY_TIMEOUT:
-              // Auto verification timed out, ask user to enter the code manually
-              console.log('Verification timeout, code: ', phoneAuthSnapshot.code);
-              setError(t('submitPhoneNumberFailed'));
-              setIsLoading(false);
-              break;
-          }
-        });
+      if (Platform.OS === 'web') {
+        await verifyPhoneNumberWeb(formattedPhoneNumber);
+      } else {
+        await verifyPhoneNumberModile(formattedPhoneNumber);
+      }
     } catch {
       setError(t('submitPhoneNumberFailed'));
     } finally {
@@ -89,14 +67,11 @@ export default function LoginPage() {
     }
     try {
       setIsLoading(true);
-      const credential = auth.PhoneAuthProvider.credential(verificationId, otp);
-      await auth().signInWithCredential(credential);
-      Toast.show({
-        type: 'success',
-        text1: t('loginSuccess'),
-      });
-      router.navigate('/');
-      Keyboard.dismiss();
+      if (Platform.OS === 'web') {
+        await verifyOtpCodeWeb();
+      } else {
+        await verifyOtpCodeMobile();
+      }
     } catch (error) {
       console.log('submit otp failed', error);
       setError(t('submitOTPFailed'));
@@ -105,58 +80,92 @@ export default function LoginPage() {
     }
   };
 
-  // Create new user, and trigger OTP verfication
-  // const handlePhoneNumberSubmit = async () => {
-  //   let formattedPhoneNumber = phoneNumber.trim();
-  //   if (!formattedPhoneNumber.startsWith('+1')) {
-  //     formattedPhoneNumber = `+1${formattedPhoneNumber}`;
-  //   }
-  //   if (!validatePhoneNumber(formattedPhoneNumber)) {
-  //     setError(t('invalidPhoneNumber'));
-  //     return;
-  //   }
-  //   setPhoneNumber(formattedPhoneNumber);
+  const verifyPhoneNumberModile = async (formattedPhoneNumber: string) => {
+    await auth()
+      .verifyPhoneNumber(formattedPhoneNumber)
+      .on('state_changed', async (phoneAuthSnapshot) => {
+        switch (phoneAuthSnapshot.state) {
+          case auth.PhoneAuthState.CODE_SENT:
+            console.log('code sent');
+            setVerificationId(phoneAuthSnapshot.verificationId);
+            setOtpSent(true);
+            setIsLoading(false);
+            break;
+          case auth.PhoneAuthState.AUTO_VERIFIED:
+            const { verificationId, code } = phoneAuthSnapshot;
+            if (verificationId && code) {
+              const credential = auth.PhoneAuthProvider.credential(verificationId, code);
+              await auth().signInWithCredential(credential);
+              Toast.show({
+                type: 'success',
+                text1: t('loginSuccess'),
+              });
+              router.navigate('/');
+            }
+            console.log('Phone number automatically verified');
+            break;
+          case auth.PhoneAuthState.AUTO_VERIFY_TIMEOUT:
+            // Auto verification timed out, ask user to enter the code manually
+            console.log('Verification timeout, code: ', phoneAuthSnapshot.code);
+            setError(t('submitPhoneNumberFailed'));
+            setIsLoading(false);
+            break;
+        }
+      });
+  };
 
-  //   try {
-  //     setIsLoading(true);
-  //     console.log('handlePhoneNumberSubmit');
-  //     const confirmation = await auth().signInWithPhoneNumber(formattedPhoneNumber);
-  //     setConfirm(confirmation);
-  //     Keyboard.dismiss();
-  //   } catch {
-  //     setError(t('submitPhoneNumberFailed'));
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const verifyOtpCodeMobile = async () => {
+    const credential = auth.PhoneAuthProvider.credential(verificationId, otp);
+    await auth().signInWithCredential(credential);
+    Toast.show({
+      type: 'success',
+      text1: t('loginSuccess'),
+    });
+    router.navigate('/');
+    Keyboard.dismiss();
+  };
 
-  // // verify otp for new user account, if temp user was previously used
-  // // send the temp user id alone, to transfer history to new user account.
-  // const handleOtpSubmit = async () => {
-  //   if (!validateOtp(otp)) {
-  //     setError(t('invalidOTP'));
-  //     return;
-  //   }
-  //   try {
-  //     setIsLoading(true);
-  //     await confirm?.confirm(otp);
-  //     Toast.show({
-  //       type: 'success',
-  //       text1: t('loginSuccess'),
-  //     });
-  //     router.navigate('/');
-  //     Keyboard.dismiss();
-  //   } catch (error) {
-  //     console.log('submit otp failed', error);
-  //     setError(t('submitOTPFailed'));
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  // for web
+  useEffect(() => {
+    if (Platform.OS === 'web' && FirebaseFactory.firebaseweb) {
+      recaptchaVerifier.current = new RecaptchaVerifier(
+        FirebaseFactory.firebaseweb.auth,
+        'recaptcha-container',
+        {
+          size: 'invisible',
+          callback: () => setCaptchaVerified(true),
+        },
+      );
+    }
+  }, []);
+
+  const verifyPhoneNumberWeb = async (formattedPhoneNumber: string) => {
+    if (FirebaseFactory.firebaseweb && recaptchaVerifier.current) {
+      console.log('handlePhoneNumberSubmit');
+      const confirmation = await signInWithPhoneNumber(
+        FirebaseFactory.firebaseweb.auth,
+        formattedPhoneNumber,
+        recaptchaVerifier.current,
+      );
+      setConfirm(confirmation);
+      setOtpSent(true);
+    }
+  };
+
+  const verifyOtpCodeWeb = async () => {
+    await confirm?.confirm(otp);
+    Toast.show({
+      type: 'success',
+      text1: t('loginSuccess'),
+    });
+    router.navigate('/');
+  };
+
   return (
     <ScrollView style={styles.loginPageWrapper} contentContainerStyle={styles.contentContainer}>
       {!otpSent ? (
         <View style={styles.iputsWrapper}>
+          {Platform.OS === 'web' && <div id="recaptcha-container"></div>}
           <TextComponent style={styles.loginInstruction}>{t('signinPhoneNumber')}</TextComponent>
           <TextInput
             placeholder="(702)123-4567"
@@ -165,14 +174,14 @@ export default function LoginPage() {
             value={phoneNumber}
             onChangeText={handleInputChange}
             inputMode="tel"
-            onSubmitEditing={verifyPhoneNumber} // Triggered when the user presses the submit button on the keyboard
+            onSubmitEditing={handlePhoneNumberSubmit} // Triggered when the user presses the submit button on the keyboard
             enterKeyHint="done"
             maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
           />
           {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
           <ButtonComponent
             label="submitPhoneNumber"
-            onPress={verifyPhoneNumber}
+            onPress={handlePhoneNumberSubmit}
             isLoading={isLoading}
           />
         </View>

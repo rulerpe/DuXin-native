@@ -1,10 +1,9 @@
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
-import functions from '@react-native-firebase/functions';
+import { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import Toast from 'react-native-toast-message';
 
+import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import { User } from '../types';
 
 interface UserContextType {
@@ -17,27 +16,14 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const { t, i18n } = useTranslation();
-  if (__DEV__) {
-    try {
-      auth().useEmulator('http://localhost:9099');
-      firestore().useEmulator('localhost', 8080);
-      functions().useEmulator('localhost', 5001);
-    } catch (error) {
-      console.log('emulator error', error);
-    }
-  }
 
   const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
     try {
       if (user) {
-        const userMeta = await firestore().collection('users').doc(user.uid).get();
-        // save user token for request to firebase function.
-        // if (Platform.OS !== 'web') {
-        //   const userToken = await user?.getIdToken();
-        //   await SecureStore.setItemAsync('auth_token', userToken);
-        // }
-        if (userMeta.exists) {
-          const userMetaData = userMeta.data() as User;
+        // first check if user is exists
+        await user.reload();
+        const userMetaData = (await FirebaseFactory.getUserMeta(user.uid)) as User;
+        if (userMetaData) {
           setUser(userMetaData);
           i18n.changeLanguage(userMetaData.language);
         } else {
@@ -49,22 +35,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             language: i18n.language,
             userType: user.isAnonymous ? 'TEMP' : ('USER' as 'TEMP' | 'USER'),
           };
-          await firestore().collection('users').doc(user.uid).set(userMetaObj);
+          await FirebaseFactory.setUserMeta(user.uid, userMetaObj);
           setUser(userMetaObj);
         }
       } else {
-        await auth().signInAnonymously();
+        await FirebaseFactory.signInAnonymously();
       }
-    } catch (error) {
-      console.log('Error getting user info', error);
-      Toast.show({
-        type: 'error',
-        text1: t('networkError'),
-      });
+    } catch (error: any) {
+      if (error.code === 'auth/user-not-found') {
+        await FirebaseFactory.signInAnonymously();
+      } else {
+        console.log('Error getting user info', error);
+        Toast.show({
+          type: 'error',
+          text1: t('networkError'),
+        });
+      }
     }
   };
   useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    const subscriber = FirebaseFactory.onAuthStateChanged(onAuthStateChanged);
     return subscriber;
   }, []);
 
