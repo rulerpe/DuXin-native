@@ -1,7 +1,6 @@
-// import auth from '@react-native-firebase/auth';
 import { router, Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from '../components/ButtonComponent';
@@ -32,7 +31,7 @@ export default function AccountPage() {
   };
 
   return (
-    <View style={styles.accountPageWrapper}>
+    <View style={[styles.accountPageWrapper, styles.webStyle]}>
       <View style={styles.accountInfoWrapper}>
         <View style={styles.accountInfoRow}>
           <Link href={{ pathname: '/account-detail' }}>
@@ -77,5 +76,9 @@ const styles = StyleSheet.create({
   logoutBtn: { paddingVertical: 5 },
   summaryListWrapper: {
     flex: 5 / 6,
+  },
+  webStyle: {
+    //@ts-ignore
+    maxHeight: Platform.OS === 'web' ? 'calc(100vh - 64px)' : undefined,
   },
 });

@@ -4,12 +4,13 @@ import { FontAwesome5 } from '@expo/vector-icons';
 interface IconButtonProps {
   icon: any;
   onPress: () => void;
+  size?: number;
 }
 
-export default function IconButton({ icon, onPress }: IconButtonProps) {
+export default function IconButton({ icon, onPress, size = 24 }: IconButtonProps) {
   return (
     <Pressable style={styles.iconButton} onPress={onPress}>
-      <FontAwesome5 name={icon} size={24} />
+      <FontAwesome5 name={icon} size={size} />
     </Pressable>
   );
 }

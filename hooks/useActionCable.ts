@@ -20,8 +20,8 @@ const useActionCable = (channelName: string, params?: Record<string, unknown>) =
         // TODO: handel this error
         return;
       }
-      //@ts-ignore
       consumer = createConsumer(
+        //@ts-ignore
         `${process.env.EXPO_PUBLIC_WEBSOCKET_URL}?token=${encodeURIComponent(token)}`,
       );
       subscription = consumer.subscriptions.create(

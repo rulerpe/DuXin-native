@@ -1,5 +1,4 @@
-import { Link } from 'expo-router';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 
 import ButtonComponent from './ButtonComponent';
 import TextComponent from './TextComponent';
@@ -10,9 +9,10 @@ interface SummaryRowProp {
   summary: Summary;
   onDelete: (id: string) => void;
   rowNumber: number;
+  onPress: (summary: Summary) => void;
 }
 
-export default function SummaryRow({ summary, onDelete, rowNumber }: SummaryRowProp) {
+export default function SummaryRow({ summary, onDelete, rowNumber, onPress }: SummaryRowProp) {
   const isDarkRowClass = (rowNumber: number): boolean => {
     return rowNumber % 2 === 0;
   };
@@ -26,21 +26,12 @@ export default function SummaryRow({ summary, onDelete, rowNumber }: SummaryRowP
   };
   return (
     <View style={[styles.rowWrapper, isDarkRowClass(rowNumber) ? styles.darkRow : {}]}>
-      <Link
-        href={{
-          pathname: '/summary/[id]',
-          params: {
-            id: summary.id,
-            title: summary.summaryTitle,
-            body: summary.summaryBody,
-            action: summary.summaryAction,
-          },
-        }}>
+      <TouchableOpacity onPress={() => onPress(summary)}>
         <View>
           <TextComponent>{formatDate(summary.createdAt)}</TextComponent>
           <TextComponent>{summary.summaryTitle}</TextComponent>
         </View>
-      </Link>
+      </TouchableOpacity>
       <View>
         <ButtonComponent
           label="deleteSummaryButton"

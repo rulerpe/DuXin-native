@@ -1,7 +1,7 @@
 import { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, StyleSheet, Text } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Modal, ScrollView } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from './ButtonComponent';
@@ -9,6 +9,9 @@ import SummaryRow from './SummaryRow';
 import { useUser } from '../contexts/UserContext';
 import FirebaseFactory from '../services/firebase/FirebaseFactory';
 import { Summary } from '../types';
+import SummaryDetail from './SummaryDetail';
+import IconButton from './IconButton';
+import theme from '../theme';
 
 export default function SummaryList() {
   const [summaryList, setSummaryList] = useState<Summary[]>([]);
@@ -18,6 +21,8 @@ export default function SummaryList() {
   const [isGetMoreLoading, setIsGetMoreLoading] = useState<boolean>(false);
   const pageSize = 10;
   const [lastVisible, setLastVisible] = useState<any>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedSummary, setSelectedSummary] = useState<Summary | null>(null);
 
   const fetchSummaries = async () => {
     try {
@@ -66,26 +71,62 @@ export default function SummaryList() {
   const onMore = async () => {
     await fetchSummaries();
   };
+  const onRowPress = (summary: Summary) => {
+    setSelectedSummary(summary);
+    setModalVisible(true);
+  };
 
   return (
-    <FlatList
-      data={summaryList}
-      renderItem={({ item, index }) => (
-        <SummaryRow summary={item} onDelete={onDelete} rowNumber={index} />
-      )}
-      keyExtractor={(summary, index) => `${summary.id}${index}`}
-      ListEmptyComponent={() => <Text style={styles.noSummary}>{t('noSummary')}</Text>}
-      ListFooterComponent={() =>
-        !noMore && (
-          <ButtonComponent
-            label="moreSummaryButton"
-            onPress={onMore}
-            isLoading={isGetMoreLoading}
-          />
-        )
-      }
-      ListFooterComponentStyle={styles.listFooter}
-    />
+    <View>
+      <FlatList
+        data={summaryList}
+        renderItem={({ item, index }) => (
+          <SummaryRow summary={item} onDelete={onDelete} rowNumber={index} onPress={onRowPress} />
+        )}
+        keyExtractor={(summary, index) => `${summary.id}${index}`}
+        ListEmptyComponent={() => <Text style={styles.noSummary}>{t('noSummary')}</Text>}
+        ListFooterComponent={() =>
+          !noMore && (
+            <ButtonComponent
+              label="moreSummaryButton"
+              onPress={onMore}
+              isLoading={isGetMoreLoading}
+            />
+          )
+        }
+        ListFooterComponentStyle={styles.listFooter}
+      />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredModal}>
+          <View style={styles.modalView}>
+            <View style={styles.modelClose}>
+              <IconButton
+                icon="window-close"
+                onPress={() => setModalVisible(!modalVisible)}
+                size={35}
+              />
+            </View>
+            <ScrollView>
+              {selectedSummary && (
+                <SummaryDetail
+                  summary={{
+                    title: selectedSummary.summaryTitle,
+                    body: selectedSummary.summaryBody,
+                    action: selectedSummary.summaryAction,
+                  }}
+                />
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
@@ -96,5 +137,30 @@ const styles = StyleSheet.create({
   },
   noSummary: {
     textAlign: 'center',
+  },
+  centeredModal: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: theme.colors.background,
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modelClose: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
