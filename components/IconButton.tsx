@@ -1,5 +1,5 @@
-import { Pressable, StyleSheet } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
+import { Pressable, StyleSheet } from 'react-native';
 
 interface IconButtonProps {
   icon: any;

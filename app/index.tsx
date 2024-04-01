@@ -1,7 +1,7 @@
 import { router, Link } from 'expo-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, ScrollView, Text } from 'react-native';
+import { StyleSheet, ScrollView, Text, View } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from '../components/ButtonComponent';
@@ -46,9 +46,14 @@ export default function HomePage() {
       <TextComponent style={styles.welcomeText}>{t('welcomText')}</TextComponent>
       <ButtonComponent label="navigateToCamera" onPress={onTakePhoto} isLoading={isLoading} />
       <LanguageSelector onLanguageChange={handleLanguageChange} isDisabled={isLoading} />
-      <Link style={styles.privacyPolicyLink} href="/privacy-policy">
-        <Text>{t('privacyPolicyLink')}</Text>
-      </Link>
+      <View style={styles.linksRow}>
+        <Link style={styles.link} href="/privacy-policy">
+          <Text>{t('privacyPolicyLink')}</Text>
+        </Link>
+        <Link style={styles.link} href="/support">
+          <Text>{t('supportLink')}</Text>
+        </Link>
+      </View>
     </ScrollView>
   );
 }
@@ -69,8 +74,12 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     textAlign: 'center',
   },
-  privacyPolicyLink: {
-    fontSize: 9,
+  link: {
+    fontSize: 12,
     textDecorationLine: 'underline',
+  },
+  linksRow: {
+    flexDirection: 'row',
+    gap: 10,
   },
 });

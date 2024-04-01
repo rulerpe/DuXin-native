@@ -7,7 +7,7 @@ import esTranslation from './locales/esTranslations.json';
 import frTranslation from './locales/frTranslations.json';
 import koTranslation from './locales/koTranslations.json';
 import ruTranslation from './locales/ruTranslations.json';
-import tlTranslation from './locales/tlTranslations.json';
+import filTranslation from './locales/filTranslations.json';
 import viTranslation from './locales/viTranslations.json';
 import zhTranslation from './locales/zhTranslations.json';
 
@@ -30,8 +30,8 @@ const resources = {
   ru: {
     translation: ruTranslation,
   },
-  tl: {
-    translation: tlTranslation,
+  fil: {
+    translation: filTranslation,
   },
   vi: {
     translation: viTranslation,

@@ -23,7 +23,7 @@
   "networkError": "No response from server. Please check your network connection.",
   "requestError": "An error occurred while making the request. Please try again.",
   "loginSuccess": "Login successful.",
-  "phoneNumberLabel": "Phone Number",
+  "accountLabel": "Account",
   "logoutButton": "Logout",
   "logoutSuccess": "Logout successful.",
   "logoutFailed": "Logout failed.",
@@ -44,6 +44,7 @@
   "AccountDeleteError": "There was an error deleting your account. Please try again later.",
   "noSummary": "Empty",
   "privacyPolicyLink": "Privacy Policy",
+  "supportLink": "Support",
   "CameraPermissionRequiredTitle": "Permission Required",
   "CameraPermissionRequiredBody": "You need to grant camera permissions to take a photo."
 }

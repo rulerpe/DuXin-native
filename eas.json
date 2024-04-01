@@ -9,6 +9,9 @@
       "channel": "development",
       "env": {
         "FIREBASE_APP_CHECK_DEBUG_TOKEN": "A7E5034E-F482-4C93-9D63-646B795EBE0B"
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "preview": {

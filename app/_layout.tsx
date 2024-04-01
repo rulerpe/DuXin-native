@@ -1,4 +1,5 @@
-import { Slot, usePathname } from 'expo-router';
+import { useURL } from 'expo-linking';
+import { Slot, usePathname, useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
@@ -13,6 +14,14 @@ import theme from '../theme';
 
 export default function Layout() {
   const pathname = usePathname();
+  const linkingUrl = useURL();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (linkingUrl && linkingUrl.includes('/firebaseauth/link')) {
+      router.push('/login?fromRecaptcha=true');
+    }
+  }, [linkingUrl]);
 
   useEffect(() => {
     if (__DEV__) {

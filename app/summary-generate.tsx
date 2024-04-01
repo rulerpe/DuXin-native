@@ -20,9 +20,7 @@ export default function SummaryGeneratePage() {
   const [summary, setSummary] = useState<Summary | null>(null);
 
   useEffect(() => {
-    if (image) {
-      processImage();
-    } else {
+    if (!image) {
       // redirect to home page if visit without any image
       router.replace('/');
     }
@@ -38,7 +36,7 @@ export default function SummaryGeneratePage() {
     console.log('process Imgage');
     try {
       setIsLoading(true);
-      const { data } = await FirebaseFactory.getImageSummary(image, i18n.language);
+      const { data } = await FirebaseFactory.getSummaryTranslation(image, i18n.language);
       setSummary(data);
     } catch (error) {
       setHasError(true);

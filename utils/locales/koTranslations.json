@@ -23,7 +23,7 @@
     "networkError": "서버로부터 응답이 없습니다. 네트워크 연결을 확인해 주세요.",
     "requestError": "요청을 처리하는 중 오류가 발생했습니다. 다시 시도해 주세요.",
     "loginSuccess": "로그인 성공.",
-    "phoneNumberLabel": "전화번호",
+    "accountLabel": "계정",
     "logoutButton": "로그아웃",
     "logoutSuccess": "로그아웃 성공.",
     "logoutFailed": "로그아웃 실패.",
@@ -44,6 +44,7 @@
     "AccountDeleteError": "계정을 삭제하는 동안 오류가 발생했습니다. 나중에 다시 시도해 주세요.",
     "noSummary": "비어 있음",
     "privacyPolicyLink": "개인정보 처리방침",
+    "supportLink": "지원",
     "CameraPermissionRequiredTitle": "권한 필요",
     "CameraPermissionRequiredBody": "사진을 찍기 위해서는 카메라 권한을 부여해야 합니다."
   }

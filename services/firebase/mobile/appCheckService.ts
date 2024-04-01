@@ -10,7 +10,7 @@ export const setupAppCheck = async (): Promise<void> => {
       },
       apple: {
         provider: __DEV__ ? 'debug' : 'appAttestWithDeviceCheckFallback',
-        debugToken: 'A7E5034E-F482-4C93-9D63-646B795EBE0B',
+        debugToken: '540BEE80-9D3A-4E6C-A832-9A3A4681DC39',
       },
       web: {
         provider: 'reCaptchaV3',

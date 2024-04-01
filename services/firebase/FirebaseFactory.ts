@@ -1,5 +1,6 @@
 import analytics from '@react-native-firebase/analytics';
-import auth from '@react-native-firebase/auth';
+import firebase from '@react-native-firebase/app';
+import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
 import { setAnalyticsCollectionEnabled, logEvent } from 'firebase/analytics';
@@ -47,6 +48,8 @@ class FirebaseFactory {
       connectFirestoreEmulator(this.firebaseweb.firestore, 'localhost', 8080);
       connectFunctionsEmulator(this.firebaseweb.functions, 'localhost', 5001);
     } else {
+      // const app = firebase.app();
+      // (app as any).emulatorHost = 'http://localhost:9099';
       auth().useEmulator('http://localhost:9099');
       firestore().useEmulator('localhost', 8080);
       functions().useEmulator('localhost', 5001);
@@ -60,41 +63,41 @@ class FirebaseFactory {
   }
 
   public analyticsInit() {
-    if (Platform.OS === 'web' && this.firebaseweb) {
-      if (!__DEV__) {
-        setAnalyticsCollectionEnabled(this.firebaseweb.analytics, true);
-      } else {
-        setAnalyticsCollectionEnabled(this.firebaseweb.analytics, false);
-      }
-    } else {
+    if (Platform.OS !== 'web') {
       if (!__DEV__) {
         analytics().setAnalyticsCollectionEnabled(true);
       } else {
         analytics().setAnalyticsCollectionEnabled(false);
       }
+    } else if (Platform.OS === 'web' && this.firebaseweb?.analytics) {
+      if (!__DEV__) {
+        setAnalyticsCollectionEnabled(this.firebaseweb.analytics, true);
+      } else {
+        setAnalyticsCollectionEnabled(this.firebaseweb.analytics, false);
+      }
     }
   }
 
   public async analyticsLogPageView(pathname: string) {
-    if (Platform.OS === 'web' && this.firebaseweb) {
-      await logEvent(this.firebaseweb.analytics, 'page_view', {
-        page_path: pathname,
-      });
-    } else {
+    if (Platform.OS !== 'web') {
       await analytics().logScreenView({
         screen_name: pathname,
         screen_class: pathname,
+      });
+    } else if (Platform.OS === 'web' && this.firebaseweb?.analytics) {
+      await logEvent(this.firebaseweb.analytics, 'page_view', {
+        page_path: pathname,
       });
     }
   }
 
   public async analyticsLogEvent(eventName: string) {
-    if (Platform.OS === 'web' && this.firebaseweb) {
-      await logEvent(this.firebaseweb.analytics, eventName, {
+    if (Platform.OS !== 'web') {
+      await analytics().logEvent(eventName, {
         button_name: eventName,
       });
-    } else {
-      await analytics().logEvent(eventName, {
+    } else if (Platform.OS === 'web' && this.firebaseweb?.analytics) {
+      await logEvent(this.firebaseweb.analytics, eventName, {
         button_name: eventName,
       });
     }
@@ -130,6 +133,23 @@ class FirebaseFactory {
       await auth().currentUser?.delete();
     }
   }
+  public authSetLanguageCode(languageCode: string) {
+    if (Platform.OS === 'web' && this.firebaseweb) {
+      this.firebaseweb.auth.languageCode = languageCode;
+    } else {
+      auth().setLanguageCode(languageCode);
+    }
+  }
+
+  public authVerifyPhoneNumberMobile(phoneNumber: string) {
+    return auth().verifyPhoneNumber(phoneNumber);
+  }
+
+  public authsSignInWithCredentialMobile(credential: FirebaseAuthTypes.AuthCredential) {
+    return auth().signInWithCredential(credential);
+  }
+  public authPhoneAuthStateMobile = auth.PhoneAuthState;
+  public authPhoneAuthProviderMobile = auth.PhoneAuthProvider;
 
   public async getUserMeta(userId: string) {
     if (Platform.OS === 'web' && this.firebaseweb) {
@@ -198,12 +218,15 @@ class FirebaseFactory {
     }
   }
 
-  public async getImageSummary(image: string | null, language: string) {
+  public async getSummaryTranslation(image: string | null, language: string) {
     if (Platform.OS === 'web' && this.firebaseweb) {
-      const getImageSummaryCall = httpsCallable(this.firebaseweb.functions, 'getImageSummary');
-      return await getImageSummaryCall({ image, language });
+      const getSummaryTranslationCall = httpsCallable(
+        this.firebaseweb.functions,
+        'getSummaryTranslation',
+      );
+      return await getSummaryTranslationCall({ image, language });
     } else {
-      return await functions().httpsCallable('getImageSummary')({
+      return await functions().httpsCallable('getSummaryTranslation')({
         image,
         language,
       });

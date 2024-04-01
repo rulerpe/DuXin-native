@@ -23,7 +23,7 @@
   "networkError": "Sin respuesta del servidor. Por favor, verifica tu conexión a la red.",
   "requestError": "Ocurrió un error al realizar la solicitud. Por favor, inténtalo de nuevo.",
   "loginSuccess": "Inicio de sesión exitoso.",
-  "phoneNumberLabel": "Número de Teléfono",
+  "accountLabel": "Cuenta",
   "logoutButton": "Cerrar sesión",
   "logoutSuccess": "Cierre de sesión exitoso.",
   "logoutFailed": "Error al cerrar sesión.",
@@ -44,6 +44,7 @@
   "AccountDeleteError": "Hubo un error al eliminar tu cuenta. Por favor, inténtalo de nuevo más tarde.",
   "noSummary": "Vacío",
   "privacyPolicyLink": "Política de Privacidad",
+  "supportLink": "Soporte",
   "CameraPermissionRequiredTitle": "Permiso Requerido",
   "CameraPermissionRequiredBody": "Necesitas otorgar permisos de cámara para tomar una foto."
 }

@@ -26,6 +26,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         if (userMetaData) {
           setUser(userMetaData);
           i18n.changeLanguage(userMetaData.language);
+          FirebaseFactory.authSetLanguageCode(userMetaData.language);
         } else {
           const userMetaObj = {
             id: user.uid,
@@ -36,6 +37,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
             userType: user.isAnonymous ? 'TEMP' : ('USER' as 'TEMP' | 'USER'),
           };
           await FirebaseFactory.setUserMeta(user.uid, userMetaObj);
+          FirebaseFactory.authSetLanguageCode(i18n.language);
           setUser(userMetaObj);
         }
       } else {

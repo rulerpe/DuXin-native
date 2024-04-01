@@ -19,7 +19,7 @@ const initFirebaseWeb = () => {
     auth: getAuth(app),
     firestore: getFirestore(app),
     functions: getFunctions(app),
-    analytics: getAnalytics(app),
+    analytics: typeof window !== 'undefined' ? getAnalytics(app) : null,
   };
 };
 

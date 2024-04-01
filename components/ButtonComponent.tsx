@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 5,
+    paddingHorizontal: 10,
     borderRadius: 10,
     minHeight: 60,
     backgroundColor: theme.colors.primary,

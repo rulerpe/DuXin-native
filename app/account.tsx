@@ -33,18 +33,18 @@ export default function AccountPage() {
   return (
     <View style={[styles.accountPageWrapper, styles.webStyle]}>
       <View style={styles.accountInfoWrapper}>
-        <View style={styles.accountInfoRow}>
-          <Link href={{ pathname: '/account-detail' }}>
+        <Link href={{ pathname: '/account-detail' }}>
+          <View style={styles.accountInfoRow}>
             <View style={styles.accountInfoLabel}>
-              <TextComponent allowFontScaling={false}>{t('phoneNumberLabel')}:</TextComponent>
+              <TextComponent allowFontScaling={false}>{t('accountLabel')}:</TextComponent>
             </View>
             <View>
               <TextComponent allowFontScaling={false} style={styles.accountInfoPhoneNumber}>
                 {user?.phoneNumber}
               </TextComponent>
-            </View>{' '}
-          </Link>
-        </View>
+            </View>
+          </View>
+        </Link>
         <View style={styles.logoutBtn}>
           <ButtonComponent label="logoutButton" onPress={onLogout} size="medium" />
         </View>
@@ -70,7 +70,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  accountInfoRow: {},
+  accountInfoRow: {
+    flexDirection: 'column',
+  },
   accountInfoLabel: {},
   accountInfoPhoneNumber: { fontWeight: 'bold' },
   logoutBtn: { paddingVertical: 5 },

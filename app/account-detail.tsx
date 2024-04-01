@@ -63,7 +63,7 @@ export default function AccountDetailPage() {
       <View style={styles.accountInfoWrapper}>
         <View style={styles.accountInfoRow}>
           <View style={styles.accountInfoLabel}>
-            <TextComponent allowFontScaling={false}>{t('phoneNumberLabel')}:</TextComponent>
+            <TextComponent allowFontScaling={false}>{t('accountLabel')}:</TextComponent>
           </View>
           <View>
             <TextComponent allowFontScaling={false} style={styles.accountInfoPhoneNumber}>
@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'flex-start',
     width: '100%',
+    paddingHorizontal: 15,
   },
   accountInfoWrapper: {
     flex: 1 / 6,
@@ -96,7 +97,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 15,
   },
-  accountInfoRow: {},
+  accountInfoRow: {
+    flexDirection: 'column',
+  },
   accountInfoLabel: {},
   accountInfoPhoneNumber: { fontWeight: 'bold' },
   logoutBtn: { paddingVertical: 5 },

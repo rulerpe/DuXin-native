@@ -25,7 +25,7 @@ export default function LanguageSelector({
     { label: '한국어', value: 'ko' },
     { label: 'Русский', value: 'ru' },
     { label: 'Tiếng Việt', value: 'vi' },
-    { label: 'Tagalog', value: 'tl' },
+    { label: 'Filipino', value: 'fil' },
   ];
 
   useEffect(() => {
@@ -55,7 +55,7 @@ export default function LanguageSelector({
             justifyContent: 'space-between',
           },
         }}
-        maxHeight={10000}
+        maxHeight={350}
         onSelectItem={handleLanguageChange}
         textStyle={styles.dropdownTextStyle}
       />

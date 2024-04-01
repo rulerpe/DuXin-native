@@ -23,7 +23,7 @@
   "networkError": "服务器无响应。请检查您的网络连接",
   "requestError": "请求时发生错误，请再试一次",
   "loginSuccess": "成功登陆",
-  "phoneNumberLabel": "电话号码",
+  "accountLabel": "账户",
   "logoutButton": "登出",
   "logoutSuccess": "成功登出",
   "logoutFailed": "登出失败",
@@ -43,7 +43,8 @@
   "AccountDeletedAlertBody":"您的账户已成功删除。",
   "AccountDeleteError": "删除您的账户时出错。请稍后再试。",
   "noSummary": "无",
-  "privacyPolicyLink": "Privacy Policy",
+  "privacyPolicyLink": "隐私政策",
+  "supportLink": "支持",
   "CameraPermissionRequiredTitle": "需要权限",
   "CameraPermissionRequiredBody": "您需要授予相机权限才能拍照"
 }
