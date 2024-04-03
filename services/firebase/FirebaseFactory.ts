@@ -1,5 +1,4 @@
 import analytics from '@react-native-firebase/analytics';
-import firebase from '@react-native-firebase/app';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import functions from '@react-native-firebase/functions';
@@ -48,8 +47,6 @@ class FirebaseFactory {
       connectFirestoreEmulator(this.firebaseweb.firestore, 'localhost', 8080);
       connectFunctionsEmulator(this.firebaseweb.functions, 'localhost', 5001);
     } else {
-      // const app = firebase.app();
-      // (app as any).emulatorHost = 'http://localhost:9099';
       auth().useEmulator('http://localhost:9099');
       firestore().useEmulator('localhost', 8080);
       functions().useEmulator('localhost', 5001);

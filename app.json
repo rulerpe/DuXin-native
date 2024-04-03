@@ -2,7 +2,7 @@
   "expo": {
     "name": "Duxin",
     "slug": "Duxin",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/DuXinIconCircle.png",
     "userInterfaceStyle": "light",
@@ -18,10 +18,14 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.neetisthebest.Duxin",
       "supportsTablet": true,
-      "buildNumber": "6",
+      "buildNumber": "13",
       "associatedDomains": [
         "applinks:duxinapp.com"
-      ]
+      ],
+      "icon": "./assets/DuXinIconSquare.png",
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to take photo of mail letter to summarize and translate it."
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +34,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.neetisthebest.Duxin",
-      "versionCode": 15
+      "versionCode": 18
     },
     "web": {
       "favicon": "./assets/DuxinLogoFaviconCircle.png",
@@ -61,9 +65,7 @@
         "projectId": "3a4029a8-7292-4a8a-9ad8-460a99504436"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/3a4029a8-7292-4a8a-9ad8-460a99504436"
     }

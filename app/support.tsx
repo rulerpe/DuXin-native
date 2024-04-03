@@ -40,6 +40,17 @@ const SupportPage = () => {
           </Text>
         </View>
 
+        <View style={styles.faqContainer}>
+          <Text style={styles.faqQuestion}>How do I delete my account?</Text>
+          <Text style={styles.faqAnswer}>
+            When signed in, press the top right icon then press the phone number, the screen will
+            show the 'Delete My Account' button, press the button will popup a account delete model
+            for conformation. once confirmed the account is deleted, and any related data will be
+            deleted. You can also visit the Delete Account form to request a account deletion
+            https://forms.gle/aTEJcxtRoDtSHb3f8
+          </Text>
+        </View>
+
         {/* <View style={styles.faqContainer}>
           <Text style={styles.faqQuestion}>Is my data kept private?</Text>
           <Text style={styles.faqAnswer}>

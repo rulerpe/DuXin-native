@@ -1,6 +1,7 @@
 import { Link, router } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
 
 import IconButton from '../components/IconButton';
 import TextComponent from '../components/TextComponent';
@@ -8,8 +9,13 @@ import { useUser } from '../contexts/UserContext';
 import theme from '../theme';
 
 export default function Header() {
-  const { user } = useUser();
+  const { user, initializeUser } = useUser();
   const { t } = useTranslation();
+
+  useEffect(() => {
+    console.log('header useeffect');
+    initializeUser();
+  }, []);
 
   const onBack = () => {
     if (router.canGoBack()) {

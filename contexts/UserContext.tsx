@@ -9,6 +9,7 @@ import { User } from '../types';
 interface UserContextType {
   user: User | null;
   setUser: (user: User | null) => void;
+  initializeUser: () => void;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -17,26 +18,26 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const { t, i18n } = useTranslation();
 
-  const onAuthStateChanged = async (user: FirebaseAuthTypes.User | null) => {
+  const onAuthStateChanged = async (authuser: FirebaseAuthTypes.User | null) => {
     try {
-      if (user) {
-        // first check if user is exists
-        await user.reload();
-        const userMetaData = (await FirebaseFactory.getUserMeta(user.uid)) as User;
+      if (authuser) {
+        // Extend the user token. if token is not valid this throw error to the catch block
+        await authuser.getIdToken(true);
+        const userMetaData = (await FirebaseFactory.getUserMeta(authuser.uid)) as User;
         if (userMetaData) {
           setUser(userMetaData);
           i18n.changeLanguage(userMetaData.language);
           FirebaseFactory.authSetLanguageCode(userMetaData.language);
         } else {
           const userMetaObj = {
-            id: user.uid,
-            createdAt: user.metadata.creationTime || '',
-            lastSignInTime: user.metadata.lastSignInTime || '',
-            phoneNumber: user.phoneNumber || '',
+            id: authuser.uid,
+            createdAt: authuser.metadata.creationTime || '',
+            lastSignInTime: authuser.metadata.lastSignInTime || '',
+            phoneNumber: authuser.phoneNumber || '',
             language: i18n.language,
-            userType: user.isAnonymous ? 'TEMP' : ('USER' as 'TEMP' | 'USER'),
+            userType: authuser.isAnonymous ? 'TEMP' : ('USER' as 'TEMP' | 'USER'),
           };
-          await FirebaseFactory.setUserMeta(user.uid, userMetaObj);
+          await FirebaseFactory.setUserMeta(authuser.uid, userMetaObj);
           FirebaseFactory.authSetLanguageCode(i18n.language);
           setUser(userMetaObj);
         }
@@ -45,7 +46,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error: any) {
       if (error.code === 'auth/user-not-found') {
-        await FirebaseFactory.signInAnonymously();
+        // if user has been deleted from firebase, sign the invalid user out.
+        await FirebaseFactory.authSignOut();
       } else {
         console.log('Error getting user info', error);
         Toast.show({
@@ -55,12 +57,15 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       }
     }
   };
-  useEffect(() => {
-    const subscriber = FirebaseFactory.onAuthStateChanged(onAuthStateChanged);
-    return subscriber;
-  }, []);
+  const initializeUser = () => {
+    FirebaseFactory.onAuthStateChanged(onAuthStateChanged);
+  };
 
-  return <UserContext.Provider value={{ user, setUser }}>{children}</UserContext.Provider>;
+  return (
+    <UserContext.Provider value={{ user, setUser, initializeUser }}>
+      {children}
+    </UserContext.Provider>
+  );
 };
 
 export const useUser = () => {

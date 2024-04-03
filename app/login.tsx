@@ -1,7 +1,15 @@
 import { useGlobalSearchParams } from 'expo-router';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { View, StyleSheet, TextInput, ScrollView, Platform } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Keyboard,
+  Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import ButtonComponent from '../components/ButtonComponent';
 import TextComponent, { defaultMaxFontSizeMultiplier } from '../components/TextComponent';
@@ -33,53 +41,57 @@ export default function LoginPage() {
   const { t } = useTranslation();
 
   return (
-    <ScrollView style={styles.loginPageWrapper} contentContainerStyle={styles.contentContainer}>
-      {!otpSent ? (
-        <View style={styles.iputsWrapper}>
-          {Platform.OS === 'web' && <div id="recaptcha-container"></div>}
-          <TextComponent style={styles.loginInstruction}>{t('signinPhoneNumber')}</TextComponent>
-          <TextInput
-            placeholder="(702)123-4567"
-            placeholderTextColor="rgba(136, 136, 136, 0.5)"
-            style={[styles.inputField, error ? styles.inputError : {}]}
-            value={phoneNumber}
-            onChangeText={handleInputChange}
-            inputMode="tel"
-            onSubmitEditing={handlePhoneNumberSubmit} // Triggered when the user presses the submit button on the keyboard
-            enterKeyHint="done"
-            maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
-          />
-          {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
-          <ButtonComponent
-            label="submitPhoneNumber"
-            onPress={handlePhoneNumberSubmit}
-            isLoading={isLoading}
-          />
-        </View>
-      ) : (
-        <View style={styles.iputsWrapper}>
-          <TextComponent style={styles.loginInstruction}>{t('signinOTP')}</TextComponent>
-          <TextInput
-            placeholder="123456"
-            placeholderTextColor="rgba(136, 136, 136, 0.5)"
-            style={[styles.inputField, error ? styles.inputError : {}]}
-            value={otp}
-            onChangeText={handleInputChange}
-            inputMode="numeric"
-            onSubmitEditing={handleOtpSubmitManully} // Triggered when the user presses the submit button on the keyboard
-            enterKeyHint="done"
-            maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
-            textContentType="oneTimeCode" // for iOS SMS AutoFill
-          />
-          {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
-          <ButtonComponent
-            label="submitOTP"
-            onPress={handleOtpSubmitManully}
-            isLoading={isLoading}
-          />
-        </View>
-      )}
-    </ScrollView>
+    <KeyboardAvoidingView
+      style={styles.loginPageWrapper}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        {!otpSent ? (
+          <View style={styles.iputsWrapper}>
+            {Platform.OS === 'web' && <div id="recaptcha-container"></div>}
+            <TextComponent style={styles.loginInstruction}>{t('signinPhoneNumber')}</TextComponent>
+            <TextInput
+              placeholder="(702)123-4567"
+              placeholderTextColor="rgba(136, 136, 136, 0.5)"
+              style={[styles.inputField, error ? styles.inputError : {}]}
+              value={phoneNumber}
+              onChangeText={handleInputChange}
+              inputMode="tel"
+              onSubmitEditing={handlePhoneNumberSubmit} // Triggered when the user presses the submit button on the keyboard
+              enterKeyHint="done"
+              maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
+            />
+            {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
+            <ButtonComponent
+              label="submitPhoneNumber"
+              onPress={handlePhoneNumberSubmit}
+              isLoading={isLoading}
+            />
+          </View>
+        ) : (
+          <View style={styles.iputsWrapper}>
+            <TextComponent style={styles.loginInstruction}>{t('signinOTP')}</TextComponent>
+            <TextInput
+              placeholder="123456"
+              placeholderTextColor="rgba(136, 136, 136, 0.5)"
+              style={[styles.inputField, error ? styles.inputError : {}]}
+              value={otp}
+              onChangeText={handleInputChange}
+              inputMode="numeric"
+              onSubmitEditing={handleOtpSubmitManully} // Triggered when the user presses the submit button on the keyboard
+              enterKeyHint="done"
+              maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
+              textContentType="oneTimeCode" // for iOS SMS AutoFill
+            />
+            {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
+            <ButtonComponent
+              label="submitOTP"
+              onPress={handleOtpSubmitManully}
+              isLoading={isLoading}
+            />
+          </View>
+        )}
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -87,8 +99,6 @@ const styles = StyleSheet.create({
   loginPageWrapper: {
     paddingHorizontal: 15,
     width: '100%',
-  },
-  contentContainer: {
     flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',

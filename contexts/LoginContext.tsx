@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { RecaptchaVerifier, signInWithPhoneNumber, ConfirmationResult } from 'firebase/auth';
 import { useState, createContext, useContext, ReactNode, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Platform } from 'react-native';
+import { Platform, Keyboard } from 'react-native';
 import Toast from 'react-native-toast-message';
 
 import FirebaseFactory from '../services/firebase/FirebaseFactory';
@@ -79,6 +79,7 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
       setError(t('submitPhoneNumberFailed'));
     } finally {
       setIsLoading(false);
+      Keyboard.dismiss();
     }
   };
 
@@ -99,6 +100,7 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
       setError(t('submitOTPFailed'));
     } finally {
       setIsLoading(false);
+      Keyboard.dismiss();
     }
   };
 
