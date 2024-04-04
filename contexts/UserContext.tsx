@@ -45,7 +45,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         await FirebaseFactory.signInAnonymously();
       }
     } catch (error: any) {
-      if (error.code === 'auth/user-not-found') {
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/internal-error') {
         // if user has been deleted from firebase, sign the invalid user out.
         await FirebaseFactory.authSignOut();
       } else {

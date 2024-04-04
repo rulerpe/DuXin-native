@@ -26,7 +26,7 @@ export default function Layout() {
   useEffect(() => {
     if (__DEV__) {
       try {
-        // FirebaseFactory.setupEmulators();
+        FirebaseFactory.setupEmulators();
       } catch (error) {
         console.log('emulator error', error);
       }

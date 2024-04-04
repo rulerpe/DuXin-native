@@ -2,7 +2,7 @@
   "expo": {
     "name": "Duxin",
     "slug": "Duxin",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/DuXinIconCircle.png",
     "userInterfaceStyle": "light",
@@ -18,7 +18,7 @@
       "googleServicesFile": "./GoogleService-Info.plist",
       "bundleIdentifier": "com.neetisthebest.Duxin",
       "supportsTablet": true,
-      "buildNumber": "13",
+      "buildNumber": "15",
       "associatedDomains": [
         "applinks:duxinapp.com"
       ],
@@ -34,7 +34,7 @@
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.neetisthebest.Duxin",
-      "versionCode": 18
+      "versionCode": 20
     },
     "web": {
       "favicon": "./assets/DuxinLogoFaviconCircle.png",
