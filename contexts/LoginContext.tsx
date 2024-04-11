@@ -18,6 +18,8 @@ interface LoginContextType {
   handleOtpSubmitManully: () => Promise<void>;
   resetStates: () => void;
   setRecaptchaVerifier: () => void;
+  countryCode: string;
+  countryCodeChange: (code: string) => void;
 }
 
 const LoginContext = createContext<LoginContextType | undefined>(undefined);
@@ -33,6 +35,7 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
   const [confirm, setConfirm] = useState<ConfirmationResult | null>(null);
   const recaptchaVerifier = useRef<RecaptchaVerifier | null>(null);
   const [captchaVerified, setCaptchaVerified] = useState<boolean>(false);
+  const [countryCode, setCountryCode] = useState('+1');
 
   const resetStates = () => {
     setPhoneNumber('');
@@ -59,15 +62,19 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const countryCodeChange = (code: string) => {
+    setCountryCode(code);
+  };
+
   const handlePhoneNumberSubmit = async () => {
-    let formattedPhoneNumber = phoneNumber.trim();
-    if (!formattedPhoneNumber.startsWith('+1')) {
-      formattedPhoneNumber = `+1${formattedPhoneNumber}`;
-    }
-    if (!validatePhoneNumber(formattedPhoneNumber)) {
-      setError(t('invalidPhoneNumber'));
-      return;
-    }
+    const formattedPhoneNumber = countryCode + phoneNumber.trim();
+    // if (!formattedPhoneNumber.startsWith('+1')) {
+    //   formattedPhoneNumber = `+1${formattedPhoneNumber}`;
+    // }
+    // if (!validatePhoneNumber(formattedPhoneNumber)) {
+    //   setError(t('invalidPhoneNumber'));
+    //   return;
+    // }
     try {
       setIsLoading(true);
       if (Platform.OS === 'web') {
@@ -127,7 +134,7 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
                 type: 'success',
                 text1: t('loginSuccess'),
               });
-              router.navigate('/');
+              router.navigate('/account');
             }
             console.log('Phone number automatically verified');
             break;
@@ -154,7 +161,7 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
       type: 'success',
       text1: t('loginSuccess'),
     });
-    router.navigate('/');
+    router.navigate('/account');
   };
 
   // for web
@@ -208,6 +215,8 @@ export const LoginProvider = ({ children }: { children: ReactNode }) => {
         handlePhoneNumberSubmit,
         resetStates,
         setRecaptchaVerifier,
+        countryCode,
+        countryCodeChange,
       }}>
       {children}
     </LoginContext.Provider>

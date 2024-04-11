@@ -5,6 +5,8 @@ export interface User {
   userType: 'USER' | 'TEMP';
   lastSignInTime: string;
   language: string;
+  totalSummaries: number;
+  previousAnonymousUID?: string;
 }
 export interface GetUserResponse {
   message: string;

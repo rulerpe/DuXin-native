@@ -116,6 +116,14 @@ class FirebaseFactory {
     }
   }
 
+  public authIsAnonymous() {
+    if (Platform.OS === 'web' && this.firebaseweb) {
+      return this.firebaseweb.auth.currentUser?.isAnonymous;
+    } else {
+      return auth().currentUser?.isAnonymous;
+    }
+  }
+
   public async authSignOut() {
     if (Platform.OS === 'web' && this.firebaseweb) {
       await signOut(this.firebaseweb.auth);
@@ -130,6 +138,8 @@ class FirebaseFactory {
       await auth().currentUser?.delete();
     }
   }
+
+  // setting the language code will change the OTP message language
   public authSetLanguageCode(languageCode: string) {
     if (Platform.OS === 'web' && this.firebaseweb) {
       this.firebaseweb.auth.languageCode = languageCode;
@@ -149,6 +159,7 @@ class FirebaseFactory {
   public authPhoneAuthProviderMobile = auth.PhoneAuthProvider;
 
   public async getUserMeta(userId: string) {
+    console.log('getUserMeta');
     if (Platform.OS === 'web' && this.firebaseweb) {
       const docRef = doc(this.firebaseweb.firestore, 'users', userId);
       const docSnap = await getDoc(docRef);
@@ -174,6 +185,16 @@ class FirebaseFactory {
       await updateDoc(docRef, { language });
     } else {
       await firestore().collection('users').doc(userId).update({ language });
+    }
+  }
+  public async updateUserTotalSummaries(user: User, totalSummaries: number) {
+    if (Platform.OS === 'web' && this.firebaseweb) {
+      const docRef = doc(this.firebaseweb.firestore, 'users', user.id);
+      await updateDoc(docRef, {
+        totalSummaries,
+      });
+    } else {
+      await firestore().collection('users').doc(user.id).update({ totalSummaries });
     }
   }
 
@@ -229,6 +250,29 @@ class FirebaseFactory {
       });
     }
   }
+  public async saveUserMeta(userMeta: User) {
+    if (Platform.OS === 'web' && this.firebaseweb) {
+      const saveUserMetaCall = httpsCallable(this.firebaseweb.functions, 'saveUserMeta');
+      return await saveUserMetaCall({ userMeta });
+    } else {
+      return await functions().httpsCallable('saveUserMeta')({
+        userMeta,
+      });
+    }
+  }
+
+  // public async transferAnonymousSummaries() {
+  //   if (Platform.OS === 'web' && this.firebaseweb) {
+  //     const transferAnonymousSummariesCall = httpsCallable(
+  //       this.firebaseweb.functions,
+  //       'transferAnonymousSummaries',
+  //     );
+  //     return await transferAnonymousSummariesCall();
+  //   } else {
+  //     console.log('before calling transferAnonymousSummaries');
+  //     return await functions().httpsCallable('transferAnonymousSummaries')();
+  //   }
+  // }
 }
 
 export default new FirebaseFactory();

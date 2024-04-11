@@ -1,5 +1,5 @@
 import { useGlobalSearchParams } from 'expo-router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   View,
@@ -9,7 +9,9 @@ import {
   Platform,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
+import { CountryPicker, CountryItem } from 'react-native-country-codes-picker';
 
 import ButtonComponent from '../components/ButtonComponent';
 import TextComponent, { defaultMaxFontSizeMultiplier } from '../components/TextComponent';
@@ -28,17 +30,24 @@ export default function LoginPage() {
     handlePhoneNumberSubmit,
     resetStates,
     setRecaptchaVerifier,
+    countryCode,
+    countryCodeChange,
   } = useLogin();
+  const { t } = useTranslation();
   const { fromRecaptcha } = useGlobalSearchParams();
+  const [showCountryPicker, setShowCountryPicker] = useState(false);
+
+  const handleCountrySelected = (item: CountryItem) => {
+    countryCodeChange(item.dial_code);
+    setShowCountryPicker(false);
+  };
 
   useEffect(() => {
-    console.log('fromRecaptcha', fromRecaptcha);
     if (!fromRecaptcha) {
       resetStates();
     }
     setRecaptchaVerifier();
   }, []);
-  const { t } = useTranslation();
 
   return (
     <KeyboardAvoidingView
@@ -49,17 +58,26 @@ export default function LoginPage() {
           <View style={styles.iputsWrapper}>
             {Platform.OS === 'web' && <div id="recaptcha-container"></div>}
             <TextComponent style={styles.loginInstruction}>{t('signinPhoneNumber')}</TextComponent>
-            <TextInput
-              placeholder="(702)123-4567"
-              placeholderTextColor="rgba(136, 136, 136, 0.5)"
-              style={[styles.inputField, error ? styles.inputError : {}]}
-              value={phoneNumber}
-              onChangeText={handleInputChange}
-              inputMode="tel"
-              onSubmitEditing={handlePhoneNumberSubmit} // Triggered when the user presses the submit button on the keyboard
-              enterKeyHint="done"
-              maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
-            />
+
+            <View style={styles.phoneNumberInputRow}>
+              <View style={styles.countryCode}>
+                <TouchableOpacity onPress={() => setShowCountryPicker(true)}>
+                  <TextComponent>{countryCode}</TextComponent>
+                </TouchableOpacity>
+              </View>
+              <TextInput
+                placeholder="7021234567"
+                placeholderTextColor="rgba(136, 136, 136, 0.5)"
+                style={[styles.inputField, error ? styles.inputError : {}, styles.phoneNumberInput]}
+                value={phoneNumber}
+                onChangeText={handleInputChange}
+                inputMode="tel"
+                onSubmitEditing={handlePhoneNumberSubmit} // Triggered when the user presses the submit button on the keyboard
+                enterKeyHint="done"
+                maxFontSizeMultiplier={defaultMaxFontSizeMultiplier}
+              />
+            </View>
+
             {error ? <TextComponent style={styles.errorMessage}>{error}</TextComponent> : null}
             <ButtonComponent
               label="submitPhoneNumber"
@@ -91,6 +109,17 @@ export default function LoginPage() {
           </View>
         )}
       </TouchableWithoutFeedback>
+      <CountryPicker
+        lang="en"
+        initialState={countryCode}
+        searchMessage={t('countryPickerSearchMessage')}
+        show={showCountryPicker}
+        pickerButtonOnPress={handleCountrySelected}
+        onBackdropPress={() => setShowCountryPicker(false)}
+        style={{
+          modal: { height: 500 },
+        }}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -132,5 +161,16 @@ const styles = StyleSheet.create({
   iputsWrapper: {
     width: '100%',
     textAlign: 'center',
+  },
+  phoneNumberInputRow: {
+    flexDirection: 'row',
+  },
+  phoneNumberInput: {
+    flex: 7 / 9,
+  },
+  countryCode: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flex: 2 / 9,
   },
 });

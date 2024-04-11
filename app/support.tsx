@@ -1,8 +1,8 @@
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link } from 'expo-router';
 import { useTranslation } from 'react-i18next';
+import { ScrollView, StyleSheet, Text, View, TouchableOpacity, Linking } from 'react-native';
 const SupportPage = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   return (
     <ScrollView
       style={styles.privacyPolicyPageWrapper}

@@ -1,7 +1,7 @@
 import { Link, router } from 'expo-router';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, StyleSheet } from 'react-native';
-import { useEffect } from 'react';
 
 import IconButton from '../components/IconButton';
 import TextComponent from '../components/TextComponent';
@@ -13,7 +13,6 @@ export default function Header() {
   const { t } = useTranslation();
 
   useEffect(() => {
-    console.log('header useeffect');
     initializeUser();
   }, []);
 

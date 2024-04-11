@@ -5,13 +5,13 @@ import { FlatList, StyleSheet, Text, View, Modal, ScrollView } from 'react-nativ
 import Toast from 'react-native-toast-message';
 
 import ButtonComponent from './ButtonComponent';
+import IconButton from './IconButton';
+import SummaryDetail from './SummaryDetail';
 import SummaryRow from './SummaryRow';
 import { useUser } from '../contexts/UserContext';
 import FirebaseFactory from '../services/firebase/FirebaseFactory';
-import { Summary } from '../types';
-import SummaryDetail from './SummaryDetail';
-import IconButton from './IconButton';
 import theme from '../theme';
+import { Summary } from '../types';
 
 export default function SummaryList() {
   const [summaryList, setSummaryList] = useState<Summary[]>([]);
@@ -44,7 +44,6 @@ export default function SummaryList() {
         const createdAt = (data.createdAt as unknown as FirebaseFirestoreTypes.Timestamp).toDate();
         return { ...data, id: doc.id, createdAt } as Summary;
       });
-      console.log('summary', summaries[0].createdAt);
 
       setSummaryList((preSummaryList) => [...preSummaryList, ...summaries]);
     } catch (error) {
@@ -58,8 +57,10 @@ export default function SummaryList() {
     }
   };
   useEffect(() => {
-    fetchSummaries();
-  }, []);
+    if (user?.userType === 'USER') {
+      fetchSummaries();
+    }
+  }, [user]);
 
   const onDelete = async (summaryId: string) => {
     await FirebaseFactory.deleteSummary(summaryId);
@@ -98,7 +99,7 @@ export default function SummaryList() {
       />
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent
         visible={modalVisible}
         onRequestClose={() => {
           setModalVisible(!modalVisible);
