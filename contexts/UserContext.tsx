@@ -15,13 +15,14 @@ interface UserContextType {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [authUser, setAuthUser] = useState<FirebaseAuthTypes.User | null>(null);
+  const [authUser, setAuthUser] = useState<FirebaseAuthTypes.User | null | undefined>(undefined);
   const [user, setUser] = useState<User | null>(null);
   const [previousAnonymousUID, setPreviousAnonymousUID] = useState('');
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const updateUserMetaData = async () => {
+      if (authUser === undefined) return;
       try {
         if (authUser) {
           // Extend the user token. if token is not valid this throw error to the catch block
@@ -75,8 +76,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     updateUserMetaData();
   }, [authUser]);
 
-  const onAuthStateChanged = async (authuser: FirebaseAuthTypes.User | null) => {
-    setAuthUser(authuser);
+  const onAuthStateChanged = async (updatedUser: FirebaseAuthTypes.User | null) => {
+    setAuthUser(updatedUser);
   };
   const initializeUser = () => {
     FirebaseFactory.onAuthStateChanged(onAuthStateChanged);
